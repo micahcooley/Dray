@@ -45,4 +45,3 @@ describe('AudioContext Singleton Pattern', () => {
     expect(typeof AudioEngineClass.contextCreationCount).toBe('number');
   });
 });
-

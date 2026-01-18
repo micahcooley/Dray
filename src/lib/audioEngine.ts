@@ -52,7 +52,9 @@ class AudioEngine {
         }
         const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
         this.context = new AudioContextClass({ latencyHint: this.currentLatencyHint });
-        console.log(`✓ AudioEngine: Created AudioContext #${AudioEngine.contextCreationCount}`);
+        if (process.env.NODE_ENV === 'development') {
+          console.log(`✓ AudioEngine: Created AudioContext #${AudioEngine.contextCreationCount}`);
+        }
       }
 
       // 3. Inject this native context into Tone.js
