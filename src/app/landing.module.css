@@ -1,0 +1,462 @@
+/* Landing Page Styles - Drey DAW */
+/* Extracted from inline styles for better performance and caching */
+
+.landingContainer {
+    min-height: 100vh;
+    overflow-x: hidden;
+    position: relative;
+}
+
+/* ============================================ */
+/* NAVBAR */
+/* ============================================ */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem 4rem;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 100;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    background: rgba(11, 11, 20, 0.8);
+    backdrop-filter: blur(12px);
+}
+
+.logoContainer {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.logoIcon {
+    color: #5865f2;
+}
+
+.logoText {
+    font-size: 1.5rem;
+    font-weight: 800;
+    letter-spacing: -1px;
+    background: linear-gradient(135deg, #5865f2, #eb459e);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.navLinks {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+}
+
+.navLinks a {
+    color: #7171a1;
+    font-weight: 500;
+    transition: color 0.3s;
+    text-decoration: none;
+}
+
+.navLinks a:hover {
+    color: #ffffff;
+}
+
+/* ============================================ */
+/* BUTTONS */
+/* ============================================ */
+.btnPrimary {
+    background: #5865f2;
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: transform 0.2s, box-shadow 0.2s;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.btnPrimary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(88, 101, 242, 0.4);
+}
+
+.btnGlow {
+    background: #5865f2;
+    color: white;
+    border: none;
+    padding: 1rem 2rem;
+    border-radius: 12px;
+    font-weight: 600;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    box-shadow: 0 0 20px rgba(88, 101, 242, 0.3);
+    transition: transform 0.2s, box-shadow 0.2s;
+    cursor: pointer;
+    text-decoration: none;
+}
+
+.btnGlow:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 30px rgba(88, 101, 242, 0.5);
+}
+
+.btnSecondary {
+    background: rgba(255, 255, 255, 0.05);
+    color: #a4a4d1;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 1rem 2rem;
+    border-radius: 12px;
+    font-weight: 600;
+    transition: background 0.3s;
+    cursor: pointer;
+}
+
+.btnSecondary:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+/* ============================================ */
+/* HERO SECTION */
+/* ============================================ */
+.hero {
+    padding: 10rem 4rem 4rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    min-height: 100vh;
+    position: relative;
+}
+
+.heroGlow {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80vw;
+    height: 60vh;
+    background: radial-gradient(circle, rgba(88, 101, 242, 0.15) 0%, transparent 70%);
+    filter: blur(60px);
+    z-index: -1;
+    pointer-events: none;
+}
+
+.heroContent {
+    max-width: 800px;
+}
+
+.heroTitle {
+    font-size: 5rem;
+    font-weight: 900;
+    line-height: 1.1;
+    margin-bottom: 1.5rem;
+    letter-spacing: -2px;
+    color: #ffffff;
+}
+
+.gradientText {
+    background: linear-gradient(135deg, #5865f2, #eb459e);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.heroSubtitle {
+    font-size: 1.25rem;
+    color: #7171a1;
+    max-width: 600px;
+    margin: 0 auto 3rem;
+    line-height: 1.6;
+}
+
+.heroSubtitle strong {
+    color: #a4a4d1;
+}
+
+.heroActions {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin-bottom: 5rem;
+}
+
+.heroImageContainer {
+    width: 100%;
+    max-width: 1200px;
+    margin-top: 4rem;
+}
+
+.heroImageWrapper {
+    padding: 4px;
+    border-radius: 16px;
+    overflow: hidden;
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.heroImage {
+    width: 100%;
+    height: auto;
+    border-radius: 12px;
+    display: block;
+}
+
+/* ============================================ */
+/* FEATURES SECTION */
+/* ============================================ */
+.features {
+    padding: 10rem 4rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.sectionHeader {
+    text-align: center;
+    margin-bottom: 5rem;
+}
+
+.sectionTitle {
+    font-size: 3rem;
+    font-weight: 800;
+    margin-bottom: 1rem;
+    color: #ffffff;
+}
+
+.sectionSubtitle {
+    color: #7171a1;
+    font-size: 1.25rem;
+}
+
+.featuresGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+}
+
+/* ============================================ */
+/* FEATURE CARD */
+/* ============================================ */
+.featureCard {
+    padding: 2.5rem;
+    border-radius: 16px;
+    transition: transform 0.3s, border-color 0.3s;
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.featureCard:hover {
+    transform: translateY(-5px);
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+.featureIcon {
+    margin-bottom: 1.5rem;
+}
+
+.featureIcon svg {
+    width: 32px;
+    height: 32px;
+}
+
+.featureTitle {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+    color: #ffffff;
+}
+
+.featureDescription {
+    color: #7171a1;
+    line-height: 1.5;
+}
+
+/* ============================================ */
+/* WINGMAN HIGHLIGHT */
+/* ============================================ */
+.wingmanHighlight {
+    margin: 0 4rem 10rem;
+    padding: 6rem;
+    border-radius: 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 4rem;
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.wingmanContent h2 {
+    font-size: 2.5rem;
+    font-weight: 800;
+    margin-bottom: 1rem;
+    color: #ffffff;
+}
+
+.wingmanContent p {
+    color: #7171a1;
+    font-size: 1.1rem;
+    line-height: 1.6;
+    max-width: 500px;
+}
+
+.wingmanBadge {
+    background: rgba(235, 69, 158, 0.1);
+    color: #eb459e;
+    padding: 0.5rem 1rem;
+    border-radius: 100px;
+    font-size: 0.875rem;
+    font-weight: 700;
+    display: inline-block;
+    margin-bottom: 1.5rem;
+    border: 1px solid rgba(235, 69, 158, 0.2);
+}
+
+.wingmanList {
+    list-style: none;
+    margin-top: 2rem;
+    padding: 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+}
+
+.wingmanList li {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #7171a1;
+    font-size: 0.9375rem;
+}
+
+.wingmanList li svg {
+    color: #eb459e;
+}
+
+.wingmanVisual {
+    flex-shrink: 0;
+}
+
+.aiGlowOrb {
+    width: 300px;
+    height: 300px;
+    background: radial-gradient(circle, rgba(235, 69, 158, 0.2) 0%, transparent 70%);
+    filter: blur(40px);
+    animation: pulse 4s infinite ease-in-out;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+        opacity: 0.5;
+    }
+
+    50% {
+        transform: scale(1.2);
+        opacity: 0.8;
+    }
+
+    100% {
+        transform: scale(1);
+        opacity: 0.5;
+    }
+}
+
+/* ============================================ */
+/* FOOTER */
+/* ============================================ */
+.footer {
+    padding: 4rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    text-align: center;
+}
+
+.footerContent {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    color: #7171a1;
+}
+
+.footerLinks {
+    display: flex;
+    gap: 2rem;
+}
+
+.footerLinks a {
+    color: #7171a1;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.footerLinks a:hover {
+    color: #ffffff;
+}
+
+/* ============================================ */
+/* ACCENT COLORS */
+/* ============================================ */
+.accentBlue {
+    color: #5865f2;
+}
+
+.accentPink {
+    color: #eb459e;
+}
+
+.accentPurple {
+    color: #9b59b6;
+}
+
+.accentGreen {
+    color: #17b169;
+}
+
+.accentOrange {
+    color: #f79009;
+}
+
+/* ============================================ */
+/* RESPONSIVE */
+/* ============================================ */
+@media (max-width: 768px) {
+    .navbar {
+        padding: 1rem 2rem;
+    }
+
+    .hero {
+        padding: 8rem 2rem 2rem;
+    }
+
+    .heroTitle {
+        font-size: 2.5rem;
+    }
+
+    .heroActions {
+        flex-direction: column;
+    }
+
+    .wingmanHighlight {
+        flex-direction: column;
+        margin: 0 2rem 5rem;
+        padding: 3rem;
+    }
+
+    .wingmanList {
+        grid-template-columns: 1fr;
+    }
+
+    .features {
+        padding: 5rem 2rem;
+    }
+
+    .footerContent {
+        flex-direction: column;
+        gap: 1rem;
+    }
+}

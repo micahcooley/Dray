@@ -1,0 +1,107 @@
+/* Sound Library Styles */
+
+.browser {
+    width: 200px;
+    background: #0c0c14;
+    border-left: 1px solid #1e1e2e;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid #1e1e2e;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    color: #a4a4d1;
+}
+
+.header svg {
+    color: #5865f2;
+}
+
+.count {
+    margin-left: auto;
+    font-size: 0.6875rem;
+    color: #58587a;
+}
+
+.hint {
+    padding: 0.5rem 1rem;
+    font-size: 0.6875rem;
+    color: #58587a;
+    border-bottom: 1px solid #1e1e2e;
+}
+
+.categories {
+    flex: 1;
+    overflow-y: auto;
+}
+
+.category {
+    border-bottom: 1px solid #1a1a24;
+}
+
+.categoryHeader {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    width: 100%;
+    padding: 0.625rem 1rem;
+    background: none;
+    border: none;
+    color: #8a8ab1;
+    font-size: 0.75rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.categoryHeader:hover {
+    background: rgba(255, 255, 255, 0.03);
+    color: white;
+}
+
+.categoryCount {
+    margin-left: auto;
+    font-size: 0.625rem;
+    color: #58587a;
+}
+
+.soundsList {
+    background: rgba(0, 0, 0, 0.2);
+}
+
+.soundItem {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem 0.5rem 2rem;
+    font-size: 0.75rem;
+    color: #7171a1;
+    cursor: pointer;
+    transition: all 0.15s;
+    user-select: none;
+}
+
+.soundItem:hover {
+    background: rgba(88, 101, 242, 0.1);
+    color: white;
+}
+
+.soundItem:active {
+    background: rgba(88, 101, 242, 0.2);
+}
+
+.soundItem svg {
+    color: #5865f2;
+    opacity: 0.6;
+}
+
+.soundItem:hover svg {
+    opacity: 1;
+}

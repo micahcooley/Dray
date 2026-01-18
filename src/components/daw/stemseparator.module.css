@@ -1,0 +1,255 @@
+/* StemSeparator Component Styles */
+
+.overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+}
+
+.modal {
+    background: #0c0c14;
+    border: 1px solid #2a2a3e;
+    border-radius: 16px;
+    width: 90%;
+    max-width: 520px;
+    overflow: hidden;
+    box-shadow: 0 24px 48px rgba(0, 0, 0, 0.5);
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid #1e1e2d;
+}
+
+.titleRow {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.titleRow h2 {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #fff;
+}
+
+.icon {
+    color: #f79009;
+}
+
+.closeBtn {
+    background: none;
+    border: none;
+    color: #58587a;
+    cursor: pointer;
+    padding: 4px;
+    display: flex;
+    transition: color 0.2s;
+}
+
+.closeBtn:hover {
+    color: #fff;
+}
+
+.error {
+    padding: 0.75rem 1.25rem;
+    background: rgba(237, 66, 69, 0.1);
+    border-bottom: 1px solid rgba(237, 66, 69, 0.2);
+    color: #ed4245;
+    font-size: 0.8125rem;
+}
+
+.content {
+    padding: 1.5rem;
+}
+
+.dropzone {
+    border: 2px dashed #2a2a3e;
+    border-radius: 12px;
+    padding: 2rem;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.dropzone:hover {
+    border-color: #5865f2;
+    background: rgba(88, 101, 242, 0.05);
+}
+
+.uploadIcon {
+    color: #58587a;
+    margin-bottom: 0.75rem;
+}
+
+.dropzone p {
+    color: #8a8ab1;
+    font-size: 0.875rem;
+    margin: 0 0 0.5rem;
+}
+
+.hint {
+    color: #58587a;
+    font-size: 0.75rem;
+}
+
+.fileInfo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    color: #fff;
+}
+
+.fileInfo svg {
+    color: #5865f2;
+}
+
+.fileName {
+    font-weight: 600;
+    word-break: break-all;
+}
+
+.fileSize {
+    color: #58587a;
+    font-size: 0.75rem;
+}
+
+.processBtn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    width: 100%;
+    background: linear-gradient(135deg, #f79009, #f04438);
+    color: white;
+    border: none;
+    padding: 0.875rem;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 0.9375rem;
+    cursor: pointer;
+    margin-top: 1rem;
+    transition: all 0.2s;
+}
+
+.processBtn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(247, 144, 9, 0.25);
+}
+
+.progressSection {
+    margin-top: 1rem;
+}
+
+.progressBar {
+    height: 8px;
+    background: #1e1e2d;
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 0.5rem;
+}
+
+.progressFill {
+    height: 100%;
+    background: linear-gradient(90deg, #f79009, #17b169);
+    border-radius: 4px;
+    transition: width 0.3s ease;
+}
+
+.progressText {
+    color: #8a8ab1;
+    font-size: 0.8125rem;
+    text-align: center;
+    display: block;
+}
+
+.stemsGrid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+.stemCard {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid #1e1e2d;
+    border-radius: 12px;
+    padding: 1rem;
+    transition: all 0.2s;
+}
+
+.stemCard:hover {
+    border-color: var(--stem-color);
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.stemHeader {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+}
+
+.stemIcon {
+    color: var(--stem-color);
+}
+
+.stemLabel {
+    font-weight: 600;
+    color: #fff;
+    font-size: 0.875rem;
+}
+
+.stemActions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.playBtn,
+.downloadBtn {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.playBtn {
+    background: var(--stem-color);
+    color: white;
+}
+
+.playBtn:hover {
+    filter: brightness(1.1);
+}
+
+.downloadBtn {
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+}
+
+.downloadBtn:hover {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.disclaimer {
+    margin-top: 1.5rem;
+    color: #58587a;
+    font-size: 0.6875rem;
+    text-align: center;
+    font-style: italic;
+}

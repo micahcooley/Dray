@@ -1,0 +1,184 @@
+/* Transport Component Styles */
+
+.toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 1rem;
+    height: 48px;
+    background: linear-gradient(180deg, var(--bg-surface) 0%, var(--bg-deep) 100%);
+    border-bottom: 1px solid var(--border-bright);
+    flex-shrink: 0;
+}
+
+.toolbarLeft,
+.toolbarRight {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.logoIcon {
+    color: var(--accent-primary);
+}
+
+.logoText {
+    font-size: 1.125rem;
+    font-weight: 800;
+    background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.projectName {
+    font-size: 0.8125rem;
+    color: var(--text-dim);
+    padding-left: 0.75rem;
+    border-left: 1px solid var(--border-bright);
+}
+
+.transport {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(255, 255, 255, 0.04);
+    padding: 0.25rem;
+    border-radius: var(--radius-lg);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    position: relative; /* create a stacking context for children */
+}
+
+.transportBtn {
+    background: none;
+    border: none;
+    color: var(--text-dim);
+    cursor: pointer;
+    padding: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    transition: all 0.2s;
+    pointer-events: auto; /* ensure clickable */
+    position: relative;
+}
+
+.transportBtn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--text-bright);
+}
+
+.transportBtn:focus-visible {
+    outline: 2px solid var(--accent-primary);
+    outline-offset: 2px;
+}
+
+.play {
+    background: var(--accent-primary);
+    color: white;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 36px; /* keep fixed space so scaling doesn't shift neighbors */
+    will-change: transform;
+    transform-origin: center center;
+    position: relative; /* lift above potential overlapping elements */
+    z-index: 20; /* higher than other transport elements */
+}
+
+.play:hover {
+    background: var(--accent-primary);
+    transform: scale(1.05);
+}
+
+.record:hover {
+    color: var(--accent-secondary);
+}
+
+.transportBtn.record:focus-visible {
+    outline: 2px solid var(--accent-secondary);
+    outline-offset: 2px;
+}
+
+.timeDisplay {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.875rem;
+    color: var(--text-bright);
+    padding: 0 0.75rem;
+    /* Use fixed-width numerals and a fixed box to avoid layout shifts as time updates */
+    font-variant-numeric: tabular-nums;
+    -webkit-font-feature-settings: "tnum" 1;
+    font-feature-settings: "tnum" 1;
+    text-align: center;
+    flex: 0 0 9ch; /* reserve space for format MM:SS:MMM (9 characters) */
+    min-width: 9ch;
+    position: relative;
+    z-index: 1; /* lower than play so it won't intercept clicks */
+    pointer-events: none; /* don't capture clicks that might overlap */
+}
+
+.tempoDisplay {
+    display: flex;
+    align-items: baseline;
+    gap: 0.25rem;
+    padding: 0 0.5rem;
+    color: var(--text-dim);
+}
+
+.tempoValue {
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: var(--text-bright);
+    /* Tabular numbers for tempo to avoid small shifts when changing */
+    font-variant-numeric: tabular-nums;
+    -webkit-font-feature-settings: "tnum" 1;
+    font-feature-settings: "tnum" 1;
+    flex: 0 0 auto;
+    width: 3ch;
+    text-align: right;
+}
+
+.tempoLabel {
+    font-size: 0.625rem;
+    text-transform: uppercase;
+}
+
+.signature {
+    font-size: 0.75rem;
+    color: var(--text-dim);
+    padding: 0.25rem 0.5rem;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 4px;
+}
+
+.actionBtn {
+    background: none;
+    border: none;
+    color: var(--text-dim);
+    cursor: pointer;
+    padding: 0.5rem;
+    display: flex;
+    align-items: center;
+    border-radius: 6px;
+    transition: all 0.2s;
+}
+
+.actionBtn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--text-bright);
+}
+
+.actionBtn:focus-visible {
+    outline: 2px solid var(--accent-primary);
+    outline-offset: 2px;
+}

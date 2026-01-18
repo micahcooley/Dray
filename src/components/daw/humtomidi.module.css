@@ -1,0 +1,274 @@
+/* HumToMidi Component Styles */
+
+.overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+}
+
+.modal {
+    background: #0c0c14;
+    border: 1px solid #2a2a3e;
+    border-radius: 16px;
+    width: 90%;
+    max-width: 480px;
+    overflow: hidden;
+    box-shadow: 0 24px 48px rgba(0, 0, 0, 0.5);
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid #1e1e2d;
+}
+
+.titleRow {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.titleRow h2 {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #fff;
+}
+
+.closeBtn {
+    background: none;
+    border: none;
+    color: #58587a;
+    cursor: pointer;
+    padding: 4px;
+    display: flex;
+    transition: color 0.2s;
+}
+
+.closeBtn:hover {
+    color: #fff;
+}
+
+.error {
+    padding: 0.75rem 1.25rem;
+    background: rgba(237, 66, 69, 0.1);
+    border-bottom: 1px solid rgba(237, 66, 69, 0.2);
+    color: #ed4245;
+    font-size: 0.8125rem;
+}
+
+.content {
+    padding: 1.5rem;
+}
+
+.initSection {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 2rem 0;
+}
+
+.micIcon {
+    color: #5865f2;
+    margin-bottom: 1rem;
+}
+
+.initSection p {
+    color: #8a8ab1;
+    font-size: 0.875rem;
+    margin-bottom: 1.5rem;
+    max-width: 280px;
+}
+
+.primaryBtn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: #5865f2;
+    color: white;
+    border: none;
+    padding: 0.75rem 1.25rem;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.primaryBtn:hover {
+    background: #4752c4;
+    transform: translateY(-1px);
+}
+
+.visualizer {
+    position: relative;
+    margin-bottom: 1rem;
+}
+
+.canvas {
+    width: 100%;
+    height: 200px;
+    border-radius: 8px;
+    border: 1px solid #1e1e2d;
+}
+
+.pitchDisplay {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: rgba(0, 0, 0, 0.7);
+    padding: 0.5rem 0.75rem;
+    border-radius: 8px;
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+}
+
+.noteName {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #fff;
+}
+
+.cents {
+    font-size: 0.75rem;
+    color: #8a8ab1;
+}
+
+.controls {
+    display: flex;
+    gap: 0.75rem;
+    justify-content: center;
+    margin-bottom: 1rem;
+}
+
+.stopBtn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    border: none;
+    padding: 0.75rem 1.25rem;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.stopBtn:hover {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+.recordBtn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: #ed4245;
+    color: white;
+    border: none;
+    padding: 0.75rem 1.25rem;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.recordBtn:hover {
+    background: #c93b3e;
+}
+
+.recordingBtn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: #ed4245;
+    color: white;
+    border: none;
+    padding: 0.75rem 1.25rem;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.875rem;
+    cursor: pointer;
+    animation: pulse 1s ease-in-out infinite;
+}
+
+@keyframes pulse {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.7;
+    }
+}
+
+.results {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid #1e1e2d;
+    border-radius: 12px;
+    padding: 1rem;
+    margin-top: 1rem;
+}
+
+.noteCount {
+    text-align: center;
+    color: #8a8ab1;
+    font-size: 0.875rem;
+    margin-bottom: 0.75rem;
+}
+
+.noteCount strong {
+    color: #fff;
+}
+
+.noteList {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    justify-content: center;
+    margin-bottom: 1rem;
+}
+
+.noteTag {
+    background: rgba(88, 101, 242, 0.15);
+    color: #5865f2;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+.useBtn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    width: 100%;
+    background: #57f287;
+    color: #000;
+    border: none;
+    padding: 0.75rem;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.useBtn:hover {
+    background: #4bd674;
+    transform: translateY(-1px);
+}
