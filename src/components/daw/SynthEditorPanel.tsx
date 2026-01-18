@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { SYNTH_PRESETS, SynthPreset, OscillatorType, updatePreset, addPreset, findPreset } from '../../lib/presets/synthPresets';
+import { SynthPreset, OscillatorType, updatePreset, addPreset, findPreset } from '../../lib/presets/synthPresets';
 import { toneSynthEngine } from '../../lib/engines/synth';
 import { audioEngine } from '../../lib/audioEngine';
 
@@ -12,8 +12,8 @@ export default function SynthEditorPanel({ presetName, onPresetChange }: SynthEd
   const [preset, setPreset] = useState<SynthPreset | null>(null);
   const [previewNote, setPreviewNote] = useState<number>(60);
   const [status, setStatus] = useState<string | null>(null);
-  const saveTimer = useRef<any>(null);
-  const debouncedUpdateRef = useRef<any>(null);
+  const saveTimer = useRef<NodeJS.Timeout | null>(null);
+  const debouncedUpdateRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     const found = findPreset(presetName) || null;

@@ -2,7 +2,7 @@
 
 import React from 'react';
 import {
-    Play, Square, Circle, SkipBack, SkipForward, Settings, Share2, Sparkles
+    Play, Square, Circle, SkipBack, Settings, Share2, Sparkles
 } from 'lucide-react';
 import { useProjectStore } from '../../store/useProjectStore';
 import { audioEngine } from '../../lib/audioEngine';

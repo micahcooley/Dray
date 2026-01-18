@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { X, Speaker, Mic, Keyboard, Monitor, User, Volume2, CheckCircle2, AlertTriangle, Activity } from 'lucide-react';
+import { X, Speaker, Mic, Keyboard, Monitor, User, Volume2, Activity } from 'lucide-react';
 import { audioEngine } from '../../lib/audioEngine';
 import styles from './SettingsModal.module.css';
 
@@ -21,6 +21,17 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
     const [latencyHint, setLatencyHint] = useState<'interactive' | 'balanced' | 'playback'>('playback');
     const [lookAhead, setLookAhead] = useState(0.1);
     const [meterLevel, setMeterLevel] = useState(0);
+
+    // Function to load audio devices
+    const loadDevices = async () => {
+        try {
+            const devices = await audioEngine.getAudioDevices();
+            setOutputs(devices.filter(d => d.kind === 'audiooutput'));
+            setInputs(devices.filter(d => d.kind === 'audioinput'));
+        } catch (e) {
+            console.error("Failed to load devices", e);
+        }
+    };
 
     // Monitor audio levels for the meter
     useEffect(() => {
@@ -57,16 +68,6 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
             clearInterval(interval);
         };
     }, [isOpen]);
-
-    const loadDevices = async () => {
-        try {
-            const devices = await audioEngine.getAudioDevices();
-            setOutputs(devices.filter(d => d.kind === 'audiooutput'));
-            setInputs(devices.filter(d => d.kind === 'audioinput'));
-        } catch (e) {
-            console.error("Failed to load devices", e);
-        }
-    };
 
     const handleDeviceChange = async (deviceId: string) => {
         setSelectedOutput(deviceId);

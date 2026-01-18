@@ -63,13 +63,6 @@ export default function VolumeMeter({
         onVolumeChange(newVal);
     };
 
-    // Helper to get color for current level
-    const getLevelColor = (level: number) => {
-        if (level > 0.9) return '#ff4d4d'; // Red
-        if (level > 0.7) return '#ffcc00'; // Yellow
-        return '#4caf50'; // Green
-    };
-
     // Convert linear 0-1 to dB approximation for display
     const getDbValue = (val: number) => {
         if (val <= 0.01) return '-∞';

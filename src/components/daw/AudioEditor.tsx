@@ -1,10 +1,10 @@
 'use client';
 
 import React, { useRef, useEffect, useState, useMemo } from 'react';
-import { X, Play, Square, ZoomIn, ZoomOut, Check, Sliders } from 'lucide-react';
+import { X, Play, Square, ZoomIn, ZoomOut, Sliders } from 'lucide-react';
 import styles from './audioeditor.module.css';
 import { useProjectStore } from '../../store/useProjectStore';
-import type { Clip, Track } from '../../lib/types';
+import type { Track } from '../../lib/types';
 import { audioEngine } from '../../lib/audioEngine';
 
 interface AudioEditorProps {
@@ -16,7 +16,7 @@ interface AudioEditorProps {
 const PIXELS_PER_BEAT = 40; // Base zoom
 
 export default function AudioEditor({ track, onTrackChange, onClose }: AudioEditorProps) {
-    const { isPlaying, togglePlay: storeTogglePlay } = useProjectStore();
+    const { } = useProjectStore();
     const [selectedClipId, setSelectedClipId] = useState<string | null>(null);
     const [zoom, setZoom] = useState(1);
     const [scrollX, setScrollX] = useState(0);
