@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { X, Speaker, Mic, Keyboard, Monitor, User, Volume2, CheckCircle2, AlertTriangle, Activity } from 'lucide-react';
 import { audioEngine } from '../../lib/audioEngine';
+import WorkletDiagnostics from './WorkletDiagnostics';
 import styles from './SettingsModal.module.css';
 
 interface SettingsModalProps {
@@ -231,6 +232,13 @@ export default function SettingsModal({ isOpen, onClose }: SettingsModalProps) {
                                         onChange={(e) => handleChangePerformance(latencyHint, parseFloat(e.target.value))}
                                         style={{ width: '200px' }}
                                     />
+                                </div>
+                            </div>
+
+                            <div className={styles.settingGroup}>
+                                <h3><Activity size={16} /> Audio Engine Diagnostics</h3>
+                                <div style={{ marginTop: 12 }}>
+                                    <WorkletDiagnostics />
                                 </div>
                             </div>
 
