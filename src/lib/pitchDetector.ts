@@ -25,7 +25,6 @@ export interface MIDINoteEvent {
 const NOTE_NAMES = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B'];
 
 class PitchDetector {
-    private audioContext: AudioContext | null = null;
     private analyser: AnalyserNode | null = null;
     private mediaStream: MediaStream | null = null;
     private source: MediaStreamAudioSourceNode | null = null;
@@ -61,15 +60,15 @@ class PitchDetector {
             });
 
             await audioEngine.initialize();
-            this.audioContext = audioEngine.getContext();
+            const audioContext = audioEngine.getContext();
 
             // Create analyser node
-            this.analyser = this.audioContext.createAnalyser();
+            this.analyser = audioContext.createAnalyser();
             this.analyser.fftSize = 2048;
             this.analyser.smoothingTimeConstant = 0.85;
 
             // Connect microphone to analyser
-            this.source = this.audioContext.createMediaStreamSource(this.mediaStream);
+            this.source = audioContext.createMediaStreamSource(this.mediaStream);
             this.source.connect(this.analyser);
 
             // Create buffer for audio data
@@ -108,7 +107,7 @@ class PitchDetector {
 
     startRecording() {
         this.recordedNotes = [];
-        this.recordingStartTime = this.audioContext?.currentTime || 0;
+        this.recordingStartTime = audioEngine.getContext().currentTime;
         this.isRecording = true;
     }
 
@@ -129,7 +128,7 @@ class PitchDetector {
         const rms = this.calculateRMS(this.buffer as any);
 
         if (rms > 0.01) { // Threshold for silence
-            const pitch = this.detectPitch(this.buffer as any, this.audioContext!.sampleRate);
+            const pitch = this.detectPitch(this.buffer as any, audioEngine.getContext().sampleRate);
 
             if (pitch && pitch.confidence > this.confidenceThreshold) {
                 // Smooth the pitch using a buffer
@@ -159,7 +158,7 @@ class PitchDetector {
     }
 
     private processNote(midiNote: number, velocity: number) {
-        const now = this.audioContext?.currentTime || 0;
+        const now = audioEngine.getContext().currentTime;
 
         if (this.currentNote === null) {
             // Start new note
@@ -174,8 +173,8 @@ class PitchDetector {
     }
 
     private endCurrentNote() {
-        if (this.currentNote !== null && this.audioContext) {
-            const now = this.audioContext.currentTime;
+        if (this.currentNote !== null) {
+            const now = audioEngine.getContext().currentTime;
             const duration = now - this.noteStartTime;
 
             if (duration >= this.minNoteDuration) {
@@ -306,8 +305,6 @@ class PitchDetector {
             this.mediaStream.getTracks().forEach(track => track.stop());
             this.mediaStream = null;
         }
-
-        this.audioContext = null;
     }
 }
 
