@@ -112,8 +112,9 @@ class PitchDetector {
     }
 
     startRecording() {
+        const ctx = audioEngine.getContext();
         this.recordedNotes = [];
-        this.recordingStartTime = audioEngine.getContext().currentTime;
+        this.recordingStartTime = ctx.currentTime;
         this.isRecording = true;
     }
 
@@ -164,7 +165,8 @@ class PitchDetector {
     }
 
     private processNote(midiNote: number, velocity: number) {
-        const now = audioEngine.getContext().currentTime;
+        const ctx = audioEngine.getContext();
+        const now = ctx.currentTime;
 
         if (this.currentNote === null) {
             // Start new note
