@@ -2,6 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { audioScheduler } from '../../lib/scheduler';
 import { audioEngine } from '../../lib/audioEngine';
 
+const SPARKLINE_SAMPLE_COUNT = 50; // Number of samples to display in sparkline
+const MIN_SPARKLINE_HEIGHT = 2;    // Minimum height percentage for sparkline bars
+
 export default function WorkletDiagnostics() {
   const [diag, setDiag] = useState(audioScheduler.getDiagnostics());
   const [engineDiag, setEngineDiag] = useState(audioEngine.getDiagnostics());
@@ -21,12 +24,12 @@ export default function WorkletDiagnostics() {
     audioScheduler.setPollInterval(Number(poll));
   };
 
-  // Calculate sparkline data for latency (last 50 samples)
-  const latencySparkline = diag.latencySamples.slice(-50);
+  // Calculate sparkline data for latency
+  const latencySparkline = diag.latencySamples.slice(-SPARKLINE_SAMPLE_COUNT);
   const maxLatency = Math.max(...latencySparkline, 1);
   
-  // Calculate sparkline data for jitter (last 50 samples)
-  const jitterSparkline = diag.jitterSamples.slice(-50);
+  // Calculate sparkline data for jitter
+  const jitterSparkline = diag.jitterSamples.slice(-SPARKLINE_SAMPLE_COUNT);
   const maxJitter = Math.max(...jitterSparkline, 1);
 
   return (
@@ -76,7 +79,7 @@ export default function WorkletDiagnostics() {
                     key={idx} 
                     style={{ 
                       flex: 1, 
-                      height: `${Math.max(height, 2)}%`, 
+                      height: `${Math.max(height, MIN_SPARKLINE_HEIGHT)}%`, 
                       background: color,
                       minWidth: 1,
                       opacity: 0.8
@@ -111,7 +114,7 @@ export default function WorkletDiagnostics() {
                     key={idx} 
                     style={{ 
                       flex: 1, 
-                      height: `${Math.max(height, 2)}%`, 
+                      height: `${Math.max(height, MIN_SPARKLINE_HEIGHT)}%`, 
                       background: color,
                       minWidth: 1,
                       opacity: 0.8

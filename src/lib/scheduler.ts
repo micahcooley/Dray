@@ -59,6 +59,10 @@ export class AudioScheduler {
         maxLatencySamples: 1000, // Keep last 1000 samples for percentile calculation
     };
 
+    // Diagnostic thresholds
+    private static readonly MISSED_TICK_THRESHOLD_PERCENT = 0.5; // 50% of tick duration
+    private static readonly MAX_WORKLET_LATENCY_MS = 1000; // Sanity check for worklet latency
+
     private constructor() { }
 
     public static getInstance(): AudioScheduler {
@@ -214,8 +218,9 @@ export class AudioScheduler {
                         this.diagnostics.latencySum -= removed;
                     }
 
-                    // Track missed ticks (latency > threshold, e.g., > half a tick duration)
-                    if (latencyMs > (secondsPer16th * 500)) { // 50% of tick duration
+                    // Track missed ticks (latency > threshold)
+                    const missedThreshold = secondsPer16th * AudioScheduler.MISSED_TICK_THRESHOLD_PERCENT * 1000;
+                    if (latencyMs > missedThreshold) {
                         this.diagnostics.missedTicks++;
                     }
                 }
@@ -283,7 +288,7 @@ export class AudioScheduler {
             // Calculate latency from worklet to main thread
             const workletLatency = (receivedTime - workletTime) * 1000; // in ms
             
-            if (workletLatency > 0 && workletLatency < 1000) { // Sanity check
+            if (workletLatency > 0 && workletLatency < AudioScheduler.MAX_WORKLET_LATENCY_MS) {
                 this.diagnostics.latencySamples.push(workletLatency);
                 this.diagnostics.latencySum += workletLatency;
                 
