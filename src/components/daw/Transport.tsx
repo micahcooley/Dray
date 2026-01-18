@@ -42,7 +42,7 @@ export default function Transport({ project }: TransportProps) {
                 storeTogglePlay();
             }
         } catch (_e) {
-            console.error('Error toggling playback:', e);
+            console.error('Error toggling playback:', _e);
         }
     };
 
@@ -55,7 +55,7 @@ export default function Transport({ project }: TransportProps) {
             }
             audioScheduler.setTime(0);
         } catch (_e) {
-            console.error('Seek error:', e);
+            console.error('Seek error:', _e);
         }
     };
 

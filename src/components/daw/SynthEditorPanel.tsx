@@ -18,8 +18,8 @@ export default function SynthEditorPanel({ presetName, onPresetChange }: SynthEd
   const [preset, setPreset] = useState<SynthPreset | null>(basePreset);
   const [previewNote, setPreviewNote] = useState<number>(60);
   const [status, setStatus] = useState<string | null>(null);
-  const saveTimer = useRef<NodeJS.Timeout | null>(null);
-  const debouncedUpdateRef = useRef<NodeJS.Timeout | null>(null);
+  const saveTimer = useRef<number | null>(null);
+  const debouncedUpdateRef = useRef<number | null>(null);
 
   // Update preset when basePreset changes
   useEffect(() => {
@@ -43,7 +43,7 @@ export default function SynthEditorPanel({ presetName, onPresetChange }: SynthEd
         // notify synth engine to apply changes to active voices (if method exists)
         try { (toneSynthEngine as any).applyPresetUpdate?.(preset.name, { [field]: value }); } catch (_e) { /* method may not exist */ }
       } catch (_e) {
-        console.error('Failed to apply preset update', e);
+        console.error('Failed to apply preset update', _e);
       }
     }, 180);
   };
@@ -60,7 +60,7 @@ export default function SynthEditorPanel({ presetName, onPresetChange }: SynthEd
     try {
       toneSynthEngine.playNote(-1, preset.name, previewNote, 0.5, 0.9);
     } catch (_e) {
-      console.error('Preview play error', e);
+      console.error('Preview play error', _e);
       setStatus('Preview failed');
       setTimeout(() => setStatus(null), 1500);
     }
@@ -82,7 +82,7 @@ export default function SynthEditorPanel({ presetName, onPresetChange }: SynthEd
       clearTimeout(saveTimer.current);
       saveTimer.current = setTimeout(() => setStatus(null), 1400);
     } catch (_e) {
-      console.error('Save preset failed', e);
+      console.error('Save preset failed', _e);
       setStatus('Save failed');
       setTimeout(() => setStatus(null), 1400);
     }
@@ -93,7 +93,7 @@ export default function SynthEditorPanel({ presetName, onPresetChange }: SynthEd
     if (!original) return;
     setPreset({ ...original });
     // apply immediately
-    try { updatePreset(original.name, original); } catch (_e) { console.error('reset apply failed', e); }
+    try { updatePreset(original.name, original); } catch (_e) { console.error('reset apply failed', _e); }
     setStatus('Reset to original');
     setTimeout(() => setStatus(null), 1200);
   };

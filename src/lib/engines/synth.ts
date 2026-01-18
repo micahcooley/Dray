@@ -560,7 +560,7 @@ class ToneSynthEngine {
                 const bundle = this.trackSynths.get(key);
                 bundle.synth.triggerAttackRelease(note, duration, time, velocity);
             } catch (_e) {
-                console.error("Error playing synth note:", e);
+                console.error("Error playing synth note:", _e);
             }
             return;
         }
@@ -573,7 +573,7 @@ class ToneSynthEngine {
                 const adjustedTime = time !== undefined ? time + 0.05 : undefined;
                 bundle.synth.triggerAttackRelease(note, duration, adjustedTime, velocity);
             } catch (_e) {
-                console.error("Error playing synth note (async):", e);
+                console.error("Error playing synth note (async):", _e);
             }
         }).catch(e => console.error("Error getting synth:", e));
     }
@@ -603,7 +603,7 @@ class ToneSynthEngine {
                 cachedBundle.synth.triggerAttackRelease(note, '8n', undefined, velocity);
                 this.lastPreviewNote = { key, note };
             } catch (_e) {
-                console.error("Error in previewNote (cached):", e);
+                console.error("Error in previewNote (cached):", _e);
             }
             return;
         }
@@ -615,7 +615,7 @@ class ToneSynthEngine {
                 bundle.synth.triggerAttackRelease(note, '8n', undefined, velocity);
                 this.lastPreviewNote = { key, note };
             } catch (_e) {
-                console.error("Error in previewNote (async):", e);
+                console.error("Error in previewNote (async):", _e);
             }
         }).catch(e => console.error("Error getting synth for preview:", e));
     }
@@ -636,7 +636,7 @@ class ToneSynthEngine {
             );
             bundle.synth.triggerAttackRelease(freqs, duration, time, velocity);
         } catch (_e) {
-            console.error("Error playing chord:", e);
+            console.error("Error playing chord:", _e);
         }
     }
 

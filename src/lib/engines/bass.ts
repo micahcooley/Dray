@@ -337,7 +337,7 @@ class ToneBassEngine implements BassEngineInterface {
                     cachedBundle.synth.triggerAttackRelease?.(n, '8n', undefined, velocity);
                     this.lastPreviewNote = { key, note: n };
                 } catch (_e) {
-                    console.error("Error in previewNote (cached):", e);
+                    console.error("Error in previewNote (cached):", _e);
                 }
             });
             return;
@@ -357,7 +357,7 @@ class ToneBassEngine implements BassEngineInterface {
                 bundle.synth.triggerAttackRelease?.(n, '8n', undefined, velocity);
                 this.lastPreviewNote = { key, note: n };
             } catch (_e) {
-                console.error("Error in previewNote (async):", e);
+                console.error("Error in previewNote (async):", _e);
             }
         }).catch(e => console.error("Error getting synth for preview:", e));
     }

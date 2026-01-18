@@ -63,7 +63,7 @@ class AudioEngine {
       try {
         this.masterGain = this.Tone.getDestination();
       } catch (_e) {
-        console.error("Failed to get Tone destination", e);
+        console.error("Failed to get Tone destination", _e);
         // Fallback should rarely happen if Tone started
         this.masterGain = this.context.destination;
       }
@@ -198,7 +198,7 @@ class AudioEngine {
       const devices = await navigator.mediaDevices.enumerateDevices();
       return devices;
     } catch (_e) {
-      console.error('Failed to enumerate devices:', e);
+      console.error('Failed to enumerate devices:', _e);
       return [];
     }
   }
@@ -222,7 +222,7 @@ class AudioEngine {
         osc.dispose();
       }, 500);
     } catch (_e) {
-      console.error('Failed to play test tone:', e);
+      console.error('Failed to play test tone:', _e);
     }
   }
 
@@ -232,7 +232,7 @@ class AudioEngine {
       stream.getTracks().forEach(t => t.stop());
       return true;
     } catch (_e) {
-      console.error('Failed to get audio permissions:', e);
+      console.error('Failed to get audio permissions:', _e);
       return false;
     }
   }
@@ -351,7 +351,7 @@ class AudioEngine {
       return { node };
 
     } catch (_e) {
-      console.error("Failed to register scheduler worklet:", e);
+      console.error("Failed to register scheduler worklet:", _e);
       return null; // Logic will fallback to setInterval
     }
   }
