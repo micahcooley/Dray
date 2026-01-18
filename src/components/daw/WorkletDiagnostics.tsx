@@ -19,9 +19,10 @@ export default function WorkletDiagnostics() {
   return (
     <div style={{ padding: 8, background: '#0b0b14', border: '1px solid #222', color: '#ddd', borderRadius: 8, fontSize: 12 }}>
       <div style={{ fontWeight: 700, marginBottom: 6 }}>Worklet Diagnostics</div>
+      <div>Using AudioWorklet: {diag.workletReady ? '✓ YES' : '✗ NO (RAF fallback)'}</div>
       <div>SAB used: {diag.sabUsed ? 'yes' : 'no'}</div>
-      <div>Head: {diag.head} Tail: {diag.tail} Unread: {diag.unread}</div>
       <div>Avg Latency: {diag.avgLatencyMs.toFixed(2)} ms ({diag.samples} samples)</div>
+      <div>Missed Ticks: {diag.missedTicks}</div>
       <div style={{ marginTop: 8, display: 'flex', gap: 8 }}>
         <label style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
           Notify threshold:

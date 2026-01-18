@@ -13,6 +13,9 @@ class AudioEngine {
   private trackChannels = new Map<number, any>();
   private pendingTrackStates = new Map<number, { volume?: number; pan?: number }>();
 
+  // Scheduler worklet node reference (prevents GC)
+  private _schedulerNode: AudioWorkletNode | null = null;
+
   private constructor() { }
 
   public static getInstance(): AudioEngine {
@@ -243,6 +246,11 @@ class AudioEngine {
     console.log('Performance settings updated:', { latencyHint, lookAhead });
   }
 
+  // Get scheduler node reference
+  public getSchedulerNode(): AudioWorkletNode | null {
+    return this._schedulerNode;
+  }
+
   // REGISTER SCHEDULER WORKLET
   // Completely rewritten to be simple and safe. No SharedArrayBuffer.
   public async registerSchedulerWorklet(): Promise<{ node: AudioWorkletNode } | null> {
@@ -340,19 +348,19 @@ class AudioEngine {
 
       const node = new AudioWorkletNode(this.context, 'scheduler-processor');
 
+      // Store reference to prevent GC (don't connect to destination to avoid unnecessary audio graph work)
+      this._schedulerNode = node;
+
       // Handle messages from the processor if needed (though we mostly listen on the port in Scheduler.ts)
       node.port.onmessage = (event) => {
         // Debugging or internal logic
       };
 
-      // Prevent GC
-      node.connect(this.context.destination);
-
       return { node };
 
     } catch (e) {
       console.error("Failed to register scheduler worklet:", e);
-      return null; // Logic will fallback to setInterval
+      return null; // Logic will fallback to RAF
     }
   }
 }
