@@ -8,7 +8,6 @@ export class AudioScheduler {
     private static instance: AudioScheduler;
     private instrumentCache = new Map<number, string>();
     private nextNoteTime = 0;
-    private timerID: ReturnType<typeof setInterval> | null = null;
     private isSchedulerRunning = false;
     private current16thNote = 0;
     private startTime = 0;
@@ -264,7 +263,7 @@ export class AudioScheduler {
             if (this.lastTickTime > 0) {
                 const expectedTickDiff = 1;
                 const actualTickDiff = tickIndex - this.lastTickTime;
-                if (actualTickDiff > expectedTickDiff + 1) {
+                if (actualTickDiff > expectedTickDiff) {
                     this.missedTicks += actualTickDiff - expectedTickDiff;
                 }
             }
@@ -279,11 +278,18 @@ export class AudioScheduler {
         if (this.audioBufferCache.has(url)) return;
         if (this.pendingLoads.has(url)) {
             // Wait for pending load to complete using Promise
-            return new Promise<void>((resolve) => {
+            return new Promise<void>((resolve, reject) => {
                 if (!this.pendingLoadResolvers.has(url)) {
                     this.pendingLoadResolvers.set(url, []);
                 }
-                this.pendingLoadResolvers.get(url)!.push(resolve);
+                this.pendingLoadResolvers.get(url)!.push(() => {
+                    // Check if load succeeded or failed
+                    if (this.audioBufferCache.has(url)) {
+                        resolve();
+                    } else {
+                        reject(new Error(`Failed to load ${url}`));
+                    }
+                });
             });
         }
 
@@ -307,7 +313,7 @@ export class AudioScheduler {
                 }
             }
 
-            // Resolve all pending load promises
+            // Resolve all pending load promises (success)
             if (this.pendingLoadResolvers.has(url)) {
                 const resolvers = this.pendingLoadResolvers.get(url)!;
                 this.pendingLoadResolvers.delete(url);
@@ -315,11 +321,11 @@ export class AudioScheduler {
             }
         } catch (e) {
             console.error('Failed to load audio clip:', url, e);
-            // Reject pending promises
+            // Notify pending promises of failure
             if (this.pendingLoadResolvers.has(url)) {
                 const resolvers = this.pendingLoadResolvers.get(url)!;
                 this.pendingLoadResolvers.delete(url);
-                resolvers.forEach(resolve => resolve()); // Resolve even on error to unblock
+                resolvers.forEach(resolve => resolve()); // Call resolver which will check cache
             }
         } finally {
             this.pendingLoads.delete(url);
@@ -336,11 +342,18 @@ export class AudioScheduler {
             }
         }
         // Wait for all clips to load, with timeout to avoid infinite wait
+        // Use allSettled to continue even if some clips fail to load
         try {
-            await Promise.race([
-                Promise.all(promises),
-                new Promise((_, reject) => setTimeout(() => reject(new Error('Preload timeout')), PRELOAD_TIMEOUT_MS))
+            const results = await Promise.race([
+                Promise.allSettled(promises),
+                new Promise<never>((_, reject) => setTimeout(() => reject(new Error('Preload timeout')), PRELOAD_TIMEOUT_MS))
             ]);
+            
+            // Log any failures for debugging
+            const failures = results.filter(r => r.status === 'rejected');
+            if (failures.length > 0) {
+                console.warn(`${failures.length} clips failed to preload`);
+            }
         } catch (e) {
             console.warn('Some clips did not preload in time:', e);
         }
@@ -357,7 +370,6 @@ export class AudioScheduler {
     public async stop() {
         // Clear running state
         this.isSchedulerRunning = false;
-        this.timerID = null;
 
         // Stop Worklet
         if (this.workletNode) {
