@@ -265,6 +265,25 @@ class AudioEngine {
     // Store for future use
     console.log('Performance settings updated:', { latencyHint, lookAhead });
   }
+  
+  /**
+   * Preload an audio clip and return a Promise
+   * Centralizes audio clip preloading with proper error handling
+   */
+  public async preloadAudioClip(url: string): Promise<AudioBuffer> {
+    if (!this.context) {
+      await this.initialize();
+    }
+    
+    const response = await fetch(url);
+    if (!response.ok) {
+      throw new Error(`Failed to fetch audio: ${response.status} ${response.statusText}`);
+    }
+    
+    const arrayBuffer = await response.arrayBuffer();
+    const audioBuffer = await this.context!.decodeAudioData(arrayBuffer);
+    return audioBuffer;
+  }
 
   // Debug utility: Get the count of AudioContext creations
   public static getContextCreationCount(): number {
