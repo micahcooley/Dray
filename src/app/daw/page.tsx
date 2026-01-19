@@ -25,7 +25,6 @@ import type { Track, Clip, MidiNote, TrackType } from '../../lib/types';
 import { SOUND_TYPE_MAP } from '../../lib/types';
 import Timeline from '../../components/daw/Timeline';
 import TrackList from '../../components/daw/TrackList';
-import Mixer from '../../components/daw/Mixer';
 import Toolbar from '../../components/daw/Toolbar';
 import { SOUND_LIBRARY, type SoundCategoryType as SoundCategory } from '../../lib/constants';
 import { Folder, ChevronDown, ChevronRight, Volume2 } from 'lucide-react';
@@ -581,6 +580,70 @@ export default function DAWPage() {
     });
   };
 
+  const handleWingmanSend = useCallback(async () => {
+    if (!wingmanInput.trim() || isLoading) return;
+
+    // 1. Prepare user message
+    const userMsg = { role: 'user' as const, text: wingmanInput };
+    setWingmanMessages(prev => [...prev, userMsg]);
+    setWingmanInput('');
+    setIsLoading(true);
+
+    try {
+      // 2. Build Context
+      const context = getProjectContext(
+        activeProject,
+        tracks,
+        isPlaying,
+        // Use AudioContext time if available, otherwise 0
+        audioEngine.getState() !== null ? audioEngine.getContext().currentTime : 0,
+        selectedTrackId,
+        SOUND_LIBRARY,
+        canUndo,
+        canRedo,
+        lastAction
+      );
+
+      // 3. Call Grok
+      // We map our simplified WingmanMessage to GrokMessage
+      const chatHistory = wingmanMessages.map(m => ({
+        role: m.role === 'ai' ? 'assistant' : 'user',
+        content: m.text
+      })) as any[];
+
+      chatHistory.push({ role: 'user', content: userMsg.text });
+
+      const rawResponse = await grokService.chat(chatHistory, context, false);
+
+      // 4. Parse Response for Actions
+      const { text, actions } = parseWingmanResponse(rawResponse);
+
+      // 5. Display Text Response
+      setWingmanMessages(prev => [...prev, { role: 'ai', text }]);
+
+      // 6. Execute Actions
+      if (actions.length > 0) {
+        console.log('Executing Wingman Actions:', actions);
+        executeWingmanActions(actions);
+      }
+
+    } catch (err) {
+      console.error(err);
+      setWingmanMessages(prev => [...prev, { role: 'ai', text: "Sorry, I encountered an issue connecting to my brain." }]);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [wingmanInput, isLoading, wingmanMessages, activeProject, tracks, isPlaying, selectedTrackId]);
+
+  const handleSuggestionClick = (type: string) => {
+    const prompts: Record<string, string> = {
+      beat: 'Generate a hard-hitting trap beat at 140 BPM',
+      melody: 'Create a catchy melody for my track',
+      mix: 'Help me mix and master this track'
+    };
+    setWingmanInput(prompts[type] || '');
+  };
+
   const handleTrackVolumeChange = (trackId: number, volume: number) => {
     setTracks(prev => prev.map(t =>
       t.id === trackId ? { ...t, volume, meterL: volume * 85, meterR: volume * 80 } : t
@@ -1031,7 +1094,16 @@ export default function DAWPage() {
       )}
 
       {/* Toolbar */}
-      <Toolbar />
+      <Toolbar
+        onSettingsClick={() => setShowSettings(true)}
+        onWingmanClick={() => setWingmanOpen(!wingmanOpen)}
+        undo={undo}
+        redo={redo}
+        canUndo={canUndo}
+        canRedo={canRedo}
+        gridDivision={gridDivision}
+        setGridDivision={setGridDivision}
+      />
 
       {/* Main Content */}
       <div className="main-content">
@@ -1079,16 +1151,6 @@ export default function DAWPage() {
               e.preventDefault();
               setShowAddTrackModal(true);
             }}
-          />
-          <Mixer
-            tracks={tracks}
-            masterVolume={masterVolume}
-            onMasterVolumeChange={(val) => setMasterVolume(val)}
-            onTrackVolumeChange={handleTrackVolumeChange}
-            onTrackPanChange={(id, val) => setTracks(prev => prev.map(t => t.id === id ? { ...t, pan: val } : t))}
-            onTrackMute={handleTrackMute}
-            onTrackSolo={handleTrackSolo}
-            isPlaying={isPlaying}
           />
         </main>
 
