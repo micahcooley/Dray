@@ -33,7 +33,7 @@ class AudioToMidiConverter {
         await audioEngine.initialize();
     }
 
-    private getAudioContext(): AudioContext {
+    private getContext(): AudioContext {
         return audioEngine.getContext();
     }
 
@@ -54,7 +54,7 @@ class AudioToMidiConverter {
             audioBuffer = audioFile;
         } else {
             const arrayBuffer = await audioFile.arrayBuffer();
-            audioBuffer = await this.getAudioContext().decodeAudioData(arrayBuffer);
+            audioBuffer = await this.getContext().decodeAudioData(arrayBuffer);
         }
 
         onProgress?.({ stage: 'Analyzing...', progress: 20 });
