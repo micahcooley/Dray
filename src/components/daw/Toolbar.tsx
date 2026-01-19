@@ -78,14 +78,6 @@ export default function Toolbar({
     togglePlay();
   };
 
-  const handleShareClick = () => {
-    if (onShareClick) {
-      onShareClick();
-    } else {
-      alert('Share functionality coming soon!');
-    }
-  };
-
   return (
     <div className="toolbar glass">
       <div className="toolbar-section">
@@ -179,9 +171,11 @@ export default function Toolbar({
         </motion.button>
         <motion.button
           className="tool-btn"
-          onClick={handleShareClick}
-          whileHover={{ scale: 1.1 }}
-          whileTap={{ scale: 0.9 }}
+          onClick={onShareClick}
+          disabled={!onShareClick}
+          whileHover={onShareClick ? { scale: 1.1 } : {}}
+          whileTap={onShareClick ? { scale: 0.9 } : {}}
+          style={{ opacity: onShareClick ? 1 : 0.5, cursor: onShareClick ? 'pointer' : 'not-allowed' }}
         >
           <Share2 size={18} />
         </motion.button>
