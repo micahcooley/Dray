@@ -66,14 +66,24 @@ export default function Toolbar({
       try {
         const engines = await import('../../lib/toneEngine');
         engines.toneSynthEngine.stopAll();
+        engines.toneDrumMachine.stopAll();
         engines.toneBassEngine.stopAll();
         engines.toneKeysEngine.stopAll();
         engines.toneVocalEngine.stopAll();
+        engines.toneFXEngine.stopAll();
       } catch (e) {
         console.warn('Failed to stop engines:', e);
       }
     }
     togglePlay();
+  };
+
+  const handleShareClick = () => {
+    if (onShareClick) {
+      onShareClick();
+    } else {
+      alert('Share functionality coming soon!');
+    }
   };
 
   return (
@@ -169,7 +179,7 @@ export default function Toolbar({
         </motion.button>
         <motion.button
           className="tool-btn"
-          onClick={onShareClick}
+          onClick={handleShareClick}
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
         >
