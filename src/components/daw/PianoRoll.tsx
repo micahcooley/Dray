@@ -106,31 +106,65 @@ function PianoRollBase({
     return null;
   }, [visiblePitches]);
 
-  const handleTogglePlay = useCallback(async (e?: React.MouseEvent) => {
-    if (e) e.stopPropagation();
-    if (!isPlaying) {
-      await audioEngine.initialize();
-      await audioEngine.resume();
+  // CUSTOM PLAY BUTTON LOGIC
+  // We handle click vs double-click manually to ensure double-click is easy to trigger
+  const lastClickTimeRef = useRef<number>(0);
+  const clickTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  const handlePlayButtonAction = useCallback(async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    const now = Date.now();
+    const timeSinceLastClick = now - lastClickTimeRef.current;
+
+    // Clear pending single click if it exists
+    if (clickTimeoutRef.current) {
+      clearTimeout(clickTimeoutRef.current);
+      clickTimeoutRef.current = null;
     }
-    storeTogglePlay();
-  }, [isPlaying, storeTogglePlay]);
 
-  const handlePlayDoubleClick = useCallback(async (e?: React.MouseEvent) => {
-    if (e) e.stopPropagation();
+    if (timeSinceLastClick < 300) {
+      // --- DOUBLE CLICK DETECTED (Stop/Reset) ---
+      lastClickTimeRef.current = 0; // Prevent triple click triggering this again immediately
 
-    // Verify engine is ready
-    await audioEngine.initialize();
-    await audioEngine.resume();
+      await audioEngine.initialize();
+      setCurrentTime(0);
+      // Ensure play state is OFF
+      if (isPlaying) storeTogglePlay();
+    } else {
+      // --- SINGLE CLICK (Toggle Play + Auto Loop) ---
+      lastClickTimeRef.current = now;
 
-    // Always reset time to 0
-    setCurrentTime(0);
+      // Verify engine
+      if (!isPlaying) {
+        await audioEngine.initialize();
+        await audioEngine.resume();
 
-    // If not playing (or if double click race condition toggled it off), force play
-    // We check the store state directly via hook dependency
-    if (!isPlaying) {
+        // Smart Auto-Loop Logic
+        // Find end of last note
+        const lastNoteEnd = notes.reduce((max, note) => Math.max(max, note.start + note.duration), 0);
+        if (lastNoteEnd > 0) {
+          // Round up to next full bar (4 beats)
+          const beatsPerBar = 4;
+          const loopEnd = Math.ceil(lastNoteEnd / beatsPerBar) * beatsPerBar;
+
+          // Access store to set loop. 
+          // Note: Since we are inside a functional component, we can use the hook's returned setters if available,
+          // or access the store state directly if needed. Assuming setLoopRange is available or we just update project.
+          const { updateProject, activeProject } = useProjectStore.getState();
+          // Only update if loop is different/not set
+          if (activeProject && (activeProject.loopEnd !== loopEnd || !activeProject.isLooping)) {
+            updateProject({
+              loopEnd: loopEnd,
+              loopStart: 0,
+              isLooping: true // Auto-enable loop
+            });
+          }
+        }
+      }
+
       storeTogglePlay();
     }
-  }, [setCurrentTime, isPlaying, storeTogglePlay]);
+  }, [isPlaying, storeTogglePlay, setCurrentTime, notes]);
 
   // Grid Snap Helper
   const snap = useCallback((val: number) => {
@@ -594,7 +628,7 @@ function PianoRollBase({
               </button>
             </div>
 
-            <button style={{ width: '40px', height: '40px', borderRadius: '50%', background: isPlaying ? '#ed4245' : '#5865f2', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', border: 'none', cursor: 'pointer', boxShadow: '0 4px 12px rgba(88, 101, 242, 0.4)' }} onClick={handleTogglePlay} onDoubleClick={handlePlayDoubleClick}>
+            <button style={{ width: '40px', height: '40px', borderRadius: '50%', background: isPlaying ? '#ed4245' : '#5865f2', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center', border: 'none', cursor: 'pointer', boxShadow: '0 4px 12px rgba(88, 101, 242, 0.4)' }} onClick={handlePlayButtonAction}>
               {isPlaying ? <Square size={16} fill="white" /> : <Play size={16} fill="white" />}
             </button>
 

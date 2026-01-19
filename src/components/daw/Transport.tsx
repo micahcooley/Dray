@@ -77,6 +77,7 @@ export default function Transport({ project }: TransportProps) {
                     type="button"
                     className={`${styles.transportBtn} ${styles.play}`}
                     onClick={handleTogglePlay}
+                    onDoubleClick={handleSeekStart}
                 >
                     {isPlaying ? (
                         <Square size={18} fill="currentColor" />

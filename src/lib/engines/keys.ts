@@ -65,7 +65,7 @@ class ToneKeysEngine implements KeysEngineInterface {
                 const reverb = new ToneLib.Reverb({ decay: 1.5, wet: 0.25 });
 
                 synth = new ToneLib.PolySynth(ToneLib.FMSynth, {
-                    harmonicity: 3.01,
+                    harmonicity: 3.0,
                     modulationIndex: 14,
                     oscillator: { type: 'sine' },
                     envelope: { attack: 0.001, decay: 1.2, sustain: 0.3, release: 0.8 },
@@ -279,7 +279,7 @@ class ToneKeysEngine implements KeysEngineInterface {
                 const delay = new ToneLib.FeedbackDelay({ delayTime: 0.25, feedback: 0.15, wet: 0.12 });
 
                 synth = new ToneLib.PolySynth(ToneLib.FMSynth, {
-                    harmonicity: 5.2,
+                    harmonicity: 5.0,
                     modulationIndex: 12,
                     oscillator: { type: 'sine' },
                     envelope: { attack: 0.001, decay: 1.8, sustain: 0, release: 1.5 },

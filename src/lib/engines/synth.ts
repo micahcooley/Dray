@@ -167,7 +167,7 @@ class ToneSynthEngine {
             case 'FM Bell': {
                 // Classic FM bell - short, plucky, glassy
                 synth = new ToneLib.PolySynth(ToneLib.FMSynth, {
-                    harmonicity: 3.01,
+                    harmonicity: 3.0,
                     modulationIndex: 12,
                     oscillator: { type: "sine" },
                     envelope: { attack: 0.001, decay: 1.5, sustain: 0, release: 1.5 },
@@ -291,7 +291,7 @@ class ToneSynthEngine {
             case 'Atmosphere': {
                 // Ethereal, evolving pad with phaser
                 synth = new ToneLib.PolySynth(ToneLib.AMSynth, {
-                    harmonicity: 2.5,
+                    harmonicity: 2.0,
                     oscillator: { type: "triangle" },
                     envelope: { attack: 2.0, decay: 1.0, sustain: 0.8, release: 4.0 }
                 });

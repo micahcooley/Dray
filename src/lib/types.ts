@@ -59,6 +59,9 @@ export interface Project {
     updatedAt: number;
     tempo: number;
     timeSignature: string;
+    loopStart?: number;
+    loopEnd?: number;
+    isLooping?: boolean;
 }
 
 // ============================================

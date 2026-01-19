@@ -71,6 +71,7 @@ const PianoRollCanvas = forwardRef<PianoRollCanvasHandle, PianoRollCanvasProps>(
         return () => ro.disconnect();
     }, [scrollContainerRef]);
 
+
     // Main Render Logic
     const renderFrame = useCallback((notesOverride?: MidiNote[]) => {
         const canvas = canvasRef.current;
@@ -234,6 +235,42 @@ const PianoRollCanvas = forwardRef<PianoRollCanvasHandle, PianoRollCanvasProps>(
             }
         }
     }, [width, height, visiblePitches, notes, pixelsPerBeat, gridSize, trackColor, selectedNoteIds, isPlaying, selectionBox, viewportSize, scrollContainerRef]);
+
+    // SCROLL SYNCHRONIZATION:
+    // We MUST listen to scroll events on the container to trigger repaints.
+    useEffect(() => {
+        const container = scrollContainerRef.current;
+        if (!container) return;
+
+        let rafId: number;
+        const handleScroll = () => {
+            cancelAnimationFrame(rafId);
+            rafId = requestAnimationFrame(() => {
+                renderFrame();
+            });
+        };
+
+        container.addEventListener('scroll', handleScroll, { passive: true });
+        return () => {
+            container.removeEventListener('scroll', handleScroll);
+            cancelAnimationFrame(rafId);
+        };
+    }, [scrollContainerRef, renderFrame]);
+
+    // PLAYBACK ANIMATION LOOP:
+    // When playing, we must aggressively re-render to animate the playhead smoothly at 60fps.
+    useEffect(() => {
+        if (!isPlaying) return;
+
+        let rafId: number;
+        const loop = () => {
+            renderFrame();
+            rafId = requestAnimationFrame(loop);
+        };
+
+        rafId = requestAnimationFrame(loop);
+        return () => cancelAnimationFrame(rafId);
+    }, [isPlaying, renderFrame]);
 
     // Expose Imperative Draw
     useImperativeHandle(ref, () => ({
