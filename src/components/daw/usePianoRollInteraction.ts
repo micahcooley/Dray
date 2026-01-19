@@ -276,7 +276,7 @@ export function usePianoRollInteraction({
         setDragMode(null);
         setDragStart(null);
         setSelectionBox(null);
-    }, [dragMode, onNotesChange, mouseDownStart, pixelsPerBeat, gridSize, getPitchFromY, notes, playNotePreview, canvasRef]);
+    }, [dragMode, onNotesChange, mouseDownStart, pixelsPerBeat, gridSize, getPitchFromY, notes, playNotePreview, canvasRef, setSelectedNotes, setMouseDownStart, setDragMode, setDragStart, setSelectionBox]);
 
 
     // Keyboard Shortcuts
