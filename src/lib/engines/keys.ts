@@ -226,6 +226,7 @@ class ToneKeysEngine implements KeysEngineInterface {
             case 'Piano': {
                 // Sampler-less piano approximation using FM
                 // FIXED: Changed harmonicity from 2.5 to 1.0 to ensure integer harmonics (accurate scale)
+                const reverb = new ToneLib.Reverb({ decay: 3, wet: 0.25 });
                 const compressor = new ToneLib.Compressor({ threshold: -20, ratio: 3 });
 
                 synth = new ToneLib.PolySynth(ToneLib.FMSynth, {

@@ -8,6 +8,8 @@ class AudioEngine {
   private initializationPromise: Promise<void> | null = null;
   private currentLatencyHint: 'interactive' | 'balanced' | 'playback' = 'playback';
   private currentLookAhead = 0.1;
+  private static contextCreationCount = 0;
+  private static hasWarnedMultipleContexts = false;
 
   // Track channels for mixing
   private trackChannels = new Map<number, any>();
@@ -45,6 +47,16 @@ class AudioEngine {
       if (!this.context) {
         const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
         this.context = new AudioContextClass({ latencyHint: this.currentLatencyHint });
+        AudioEngine.contextCreationCount++;
+        
+        // Debug assertion: warn once if multiple contexts are created
+        if (AudioEngine.contextCreationCount > 1 && !AudioEngine.hasWarnedMultipleContexts) {
+          console.warn(
+            `[AudioEngine] Multiple AudioContext instances detected! Count: ${AudioEngine.contextCreationCount}`,
+            'This may cause timing issues and resource waste.'
+          );
+          AudioEngine.hasWarnedMultipleContexts = true;
+        }
       }
 
       // 3. Inject this native context into Tone.js
@@ -146,6 +158,17 @@ class AudioEngine {
     try { ch.panner.pan.rampTo(value / 100, 0.05); } catch (_e) { ch.panner.pan.value = value / 100; }
   }
 
+  public setMasterVolume(value: number) {
+    if (!this._isInitialized || !this.Tone) return;
+    // value is 0-1 linear
+    const db = value <= 0.001 ? -Infinity : 20 * Math.log10(value);
+    try {
+        this.Tone.getDestination().volume.rampTo(db, 0.1);
+    } catch (e) {
+        console.error("Failed to set master volume", e);
+    }
+  }
+
   public getTrackLevels(): Record<number, number> {
     const out: Record<number, number> = {};
     if (!this.context || !this._isInitialized) return out;
@@ -243,6 +266,23 @@ class AudioEngine {
     console.log('Performance settings updated:', { latencyHint, lookAhead });
   }
 
+  // Debug utility: Get the count of AudioContext creations
+  public static getContextCreationCount(): number {
+    return AudioEngine.contextCreationCount;
+  }
+
+  // Debug utility: Assert only one context exists
+  public static assertSingleContext(): boolean {
+    if (AudioEngine.contextCreationCount > 1) {
+      console.error(
+        `[AudioEngine] ASSERTION FAILED: Multiple AudioContext instances created (${AudioEngine.contextCreationCount})!`,
+        'Only one AudioContext should exist for the entire application.'
+      );
+      return false;
+    }
+    return true;
+  }
+
   // REGISTER SCHEDULER WORKLET
   // Completely rewritten to be simple and safe. No SharedArrayBuffer.
   // This Worklet acts as a stable METRONOME independent of the main thread.
@@ -305,8 +345,8 @@ class AudioEngine {
 
       return { node };
 
-    } catch (_e) {
-      console.error("Failed to register scheduler worklet:", _e);
+    } catch (e) {
+      console.error("Failed to register scheduler worklet:", e);
       return null;
     }
   }
