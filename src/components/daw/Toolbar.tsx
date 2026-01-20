@@ -2,11 +2,13 @@
 
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Play, Square, Circle, Sparkles, Settings, Share2, Undo2, Redo2 } from 'lucide-react';
+import { Play, Square, Circle, Sparkles, Settings, Share2, Undo2, Redo2, SkipBack } from 'lucide-react';
 import { useProjectStore } from '../../store/useProjectStore';
 import { usePlaybackTime } from '../../hooks/usePlaybackTime';
 import { audioEngine } from '../../lib/audioEngine';
 import dynamic from 'next/dynamic';
+import styles from './Toolbar.module.css';
+import TimeDisplay from './TimeDisplay';
 
 const ThemeToggle = dynamic(() => import('../ThemeToggle'), { ssr: false });
 
@@ -41,7 +43,7 @@ export default function Toolbar({
   gridDivision,
   setGridDivision
 }: ToolbarProps) {
-  const { isPlaying, togglePlay, activeProject } = useProjectStore();
+  const { isPlaying, togglePlay, activeProject, setCurrentTime } = useProjectStore();
   const playbackTime = usePlaybackTime();
 
   const handleTogglePlay = async () => {
@@ -66,11 +68,9 @@ export default function Toolbar({
       try {
         const engines = await import('../../lib/toneEngine');
         engines.toneSynthEngine.stopAll();
-        engines.toneDrumMachine.stopAll();
         engines.toneBassEngine.stopAll();
         engines.toneKeysEngine.stopAll();
         engines.toneVocalEngine.stopAll();
-        engines.toneFXEngine.stopAll();
       } catch (e) {
         console.warn('Failed to stop engines:', e);
       }
@@ -79,43 +79,36 @@ export default function Toolbar({
   };
 
   return (
-    <div className="toolbar glass">
-      <div className="toolbar-section">
-        <div className="logo" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginRight: '1rem' }}>
-          <Sparkles size={20} style={{ color: '#5865f2' }} />
-          <span style={{ fontWeight: 800, fontSize: '1.2rem', background: 'linear-gradient(135deg, #5865f2, #eb459e)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>Drey</span>
+    <div className={styles.toolbar}>
+      <div className={styles.toolbarLeft}>
+        <div className={styles.logo}>
+          <Sparkles size={20} className={styles.logoIcon} />
+          <span className={styles.logoText}>Drey</span>
         </div>
-        <div className="project-info">
-          <span className="project-name">{activeProject?.name || 'Untitled Project'}</span>
-          <span className="project-version">v1.2</span>
-        </div>
+        <div className={styles.projectName}>{activeProject?.name || 'Untitled'}</div>
 
-        <div className="history-controls">
-          <motion.button
-            className={`history-btn ${!canUndo ? 'disabled' : ''}`}
+        <div className={styles.historyControls}>
+          <button
+            className={`${styles.historyBtn}`}
             onClick={undo}
             disabled={!canUndo}
             title="Undo (Ctrl+Z)"
-            whileHover={canUndo ? { scale: 1.1, backgroundColor: 'var(--border-bright)' } : {}}
-            whileTap={canUndo ? { scale: 0.95 } : {}}
           >
             <Undo2 size={16} />
-          </motion.button>
-          <motion.button
-            className={`history-btn ${!canRedo ? 'disabled' : ''}`}
+          </button>
+          <button
+            className={`${styles.historyBtn}`}
             onClick={redo}
             disabled={!canRedo}
             title="Redo (Ctrl+Shift+Z)"
-            whileHover={canRedo ? { scale: 1.1, backgroundColor: 'var(--border-bright)' } : {}}
-            whileTap={canRedo ? { scale: 0.95 } : {}}
           >
             <Redo2 size={16} />
-          </motion.button>
+          </button>
         </div>
 
-        <div className="grid-controls">
+        <div className={styles.gridControls}>
           <select
-            className="grid-select"
+            className={styles.gridSelect}
             value={gridDivision}
             onChange={(e) => setGridDivision(Number(e.target.value))}
             title="Grid Division"
@@ -129,167 +122,37 @@ export default function Toolbar({
         </div>
       </div>
 
-      <div className="toolbar-section transport">
-        <motion.button
-          className="tool-btn"
-          onClick={handleTogglePlay}
-          whileHover={{ scale: 1.1, backgroundColor: 'rgba(255,255,255,0.1)' }}
-          whileTap={{ scale: 0.95 }}
-        >
-          {isPlaying ? <Square size={20} fill="currentColor" /> : <Play size={20} fill="currentColor" />}
-        </motion.button>
-        <motion.button
-          className="tool-btn record"
-          whileHover={{ scale: 1.1, backgroundColor: 'rgba(255,77,77,0.1)' }}
-          whileTap={{ scale: 0.95 }}
-        >
-          <Circle size={18} fill="currentColor" />
-        </motion.button>
-        <div className="time-display">
-          <span className="time-value">{formatTime(playbackTime)}</span>
-          <span className="tempo-value">{activeProject?.tempo || 120} BPM</span>
+      <div className={styles.transport}>
+        <button className={styles.transportBtn} onClick={() => setCurrentTime(0)}>
+            <SkipBack size={16} />
+        </button>
+        <button className={`${styles.transportBtn} ${styles.play}`} onClick={handleTogglePlay}>
+          {isPlaying ? <Square size={18} fill="currentColor" /> : <Play size={18} fill="currentColor" />}
+        </button>
+        <button className={`${styles.transportBtn} ${styles.record}`}>
+            <Circle size={16} />
+        </button>
+        <div className={styles.timeDisplay}><TimeDisplay /></div>
+        <div className={styles.tempoDisplay}>
+          <span className={styles.tempoValue}>128</span>
+          <span className={styles.tempoLabel}>BPM</span>
         </div>
+        <div className={styles.signature}>4/4</div>
       </div>
 
-      <div className="toolbar-section actions">
+      <div className={styles.toolbarRight}>
         <ThemeToggle />
-        <motion.button
-          className="btn-wingman"
+        <button
+          className={styles.actionBtn}
           onClick={onWingmanClick}
-          whileHover={{ scale: 1.05, boxShadow: '0 0 20px rgba(235, 69, 158, 0.4)' }}
-          whileTap={{ scale: 0.95 }}
+          title="Wingman AI"
+          style={{ color: '#eb459e' }}
         >
-          <Sparkles size={16} /> Wingman AI
-        </motion.button>
-        <motion.button
-          className="tool-btn"
-          onClick={onSettingsClick}
-          whileHover={{ scale: 1.1, rotate: 90 }}
-          whileTap={{ scale: 0.9 }}
-        >
-          <Settings size={18} />
-        </motion.button>
-        <motion.button
-          className="tool-btn"
-          onClick={onShareClick}
-          disabled={!onShareClick}
-          whileHover={onShareClick ? { scale: 1.1 } : {}}
-          whileTap={onShareClick ? { scale: 0.9 } : {}}
-          style={{ opacity: onShareClick ? 1 : 0.5, cursor: onShareClick ? 'pointer' : 'not-allowed' }}
-        >
-          <Share2 size={18} />
-        </motion.button>
+          <Sparkles size={18} />
+        </button>
+        <button className={styles.actionBtn} onClick={onSettingsClick}><Settings size={18} /></button>
+        <button className={styles.actionBtn} onClick={onShareClick}><Share2 size={18} /></button>
       </div>
-
-      <style jsx>{`
-        .toolbar {
-          height: 60px;
-          display: flex;
-          justify-content: space-between;
-          align-items: center;
-          padding: 0 1.5rem;
-          margin-bottom: 2px;
-          border-bottom: 1px solid var(--border-subtle);
-          background: var(--bg-surface);
-        }
-        .toolbar-section {
-          display: flex;
-          align-items: center;
-          gap: 1rem;
-        }
-        .project-info {
-          display: flex;
-          flex-direction: column;
-        }
-        .project-name {
-          font-weight: 700;
-          font-size: 0.875rem;
-        }
-        .project-version {
-          font-size: 0.75rem;
-          color: var(--text-dim);
-        }
-        .history-controls { display: flex; gap: 4px; margin-left: 0.5rem; }
-        .history-btn {
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          width: 28px;
-          height: 28px;
-          background: var(--border-subtle);
-          border: 1px solid var(--border-bright);
-          border-radius: 4px;
-          color: var(--text-dim);
-          cursor: pointer;
-          transition: all 0.15s;
-        }
-        .history-btn:hover:not(.disabled) { color: var(--text-bright); border-color: var(--accent-primary); }
-        .history-btn.disabled { opacity: 0.3; cursor: not-allowed; }
-        .grid-controls { margin-left: 0.25rem; }
-        .grid-select {
-          background: var(--border-subtle);
-          border: 1px solid var(--border-bright);
-          border-radius: 4px;
-          color: var(--text-dim);
-          padding: 4px 8px;
-          font-size: 0.7rem;
-          cursor: pointer;
-          outline: none;
-        }
-        .grid-select:hover { border-color: var(--accent-primary); color: var(--text-bright); }
-        .grid-select:focus { border-color: var(--accent-primary); }
-        .transport {
-          gap: 0.5rem;
-        }
-        .tool-btn {
-          background: transparent;
-          border: none;
-          color: var(--text-main);
-          width: 36px;
-          height: 36px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          border-radius: var(--radius-sm);
-          cursor: pointer;
-        }
-        .tool-btn.record:hover {
-          color: #ff4d4d;
-        }
-        .time-display {
-          background: rgba(0, 0, 0, 0.3);
-          padding: 0.25rem 0.75rem;
-          border-radius: var(--radius-sm);
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          min-width: 100px;
-          font-family: 'JetBrains Mono', monospace;
-        }
-        .time-value {
-          font-size: 0.875rem;
-          color: var(--accent-primary);
-          font-weight: 700;
-        }
-        .tempo-value {
-          font-size: 0.625rem;
-          color: var(--text-dim);
-        }
-        .btn-wingman {
-          background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
-          color: white;
-          border: none;
-          padding: 0.5rem 1rem;
-          border-radius: var(--radius-md);
-          font-weight: 600;
-          font-size: 0.8125rem;
-          display: flex;
-          align-items: center;
-          gap: 0.5rem;
-          box-shadow: 0 0 15px rgba(235, 69, 158, 0.2);
-          cursor: pointer;
-        }
-      `}</style>
     </div>
   );
 }

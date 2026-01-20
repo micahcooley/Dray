@@ -1,0 +1,110 @@
+.toolbar {
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1rem;
+  background: var(--bg-surface);
+  border-bottom: 1px solid var(--theme-border);
+}
+
+.toolbarLeft { display: flex; align-items: center; gap: 1rem; }
+
+.logo { display: flex; align-items: center; gap: 0.5rem; }
+.logoIcon { color: #5865f2; }
+.logoText {
+  font-weight: 800;
+  font-size: 1.2rem;
+  background: linear-gradient(135deg, #5865f2, #eb459e);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.projectName { font-size: 0.8rem; color: #666; }
+
+.historyControls { display: flex; gap: 2px; margin-left: 0.5rem; }
+
+.historyBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  background: var(--border-subtle);
+  border: 1px solid var(--border-bright);
+  border-radius: 4px;
+  color: var(--text-dim);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+.historyBtn:hover:not(:disabled) { background: var(--border-bright); color: var(--text-bright); border-color: var(--accent-primary); }
+.historyBtn:disabled { opacity: 0.3; cursor: not-allowed; }
+
+.gridControls { margin-left: 0.25rem; }
+
+.gridSelect {
+  background: var(--border-subtle);
+  border: 1px solid var(--border-bright);
+  border-radius: 4px;
+  color: var(--text-dim);
+  padding: 4px 8px;
+  font-size: 0.7rem;
+  cursor: pointer;
+  outline: none;
+}
+.gridSelect:hover { border-color: var(--accent-primary); color: var(--text-bright); }
+.gridSelect:focus { border-color: var(--accent-primary); }
+
+.transport {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  background: var(--bg-deep);
+  padding: 0.25rem 0.75rem;
+  border-radius: 6px;
+  border: 1px solid var(--border-subtle);
+}
+
+.transportBtn {
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  color: var(--text-dim);
+  border-radius: 4px;
+  cursor: pointer;
+}
+.transportBtn:hover { background: var(--border-subtle); color: var(--text-bright); }
+.transportBtn.play { background: linear-gradient(135deg, #5865f2, #4752c4); color: white; }
+.transportBtn.record:hover { color: #ff4d4d; }
+
+.timeDisplay, .tempoDisplay, .signature {
+  background: var(--bg-deep);
+  padding: 0.2rem 0.5rem;
+  border-radius: 3px;
+  margin-left: 0.5rem;
+  font-size: 0.75rem;
+}
+
+.tempoValue { color: #eb459e; font-weight: 700; }
+.tempoLabel { color: #444; font-size: 0.5rem; margin-left: 2px; }
+.signature { color: #444; }
+
+.toolbarRight { display: flex; gap: 0.25rem; }
+
+.actionBtn {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: none;
+  color: var(--text-dim);
+  border-radius: 4px;
+  cursor: pointer;
+}
+.actionBtn:hover { background: var(--border-subtle); color: var(--text-bright); }
