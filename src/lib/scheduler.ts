@@ -1,6 +1,5 @@
 import { audioEngine } from './audioEngine';
 import { useProjectStore } from '../store/useProjectStore';
-import { updatePlaybackTime } from '../hooks/usePlaybackTime';
 import { LOOKAHEAD_TIME, SCHEDULER_INTERVAL, BEATS_VISIBLE, getEngineForInstrument } from './constants';
 import type { MidiNote, Track, Clip } from './types';
 
@@ -160,7 +159,7 @@ export class AudioScheduler {
 
         // Ensure visual loop is also running
         if (!this.rafId) {
-            this.rafId = requestAnimationFrame(() => this.visualLoop());
+            this.rafId = requestAnimationFrame(this.visualLoop);
         }
     }
 
@@ -656,25 +655,23 @@ export class AudioScheduler {
 
 
 
-    private visualLoop() {
+    private visualLoop = () => {
         if (!this.isRunning()) return;
 
         const now = audioEngine.getNow();
         const songTime = now - this.startTime;
 
-        const { activeProject } = useProjectStore.getState();
-        const bpm = activeProject?.tempo || 120;
+        // Use cached tempo to avoid global store access in hot loop
+        const bpm = this.tempoCache;
         const currentBeat = (songTime * bpm) / 60;
 
-        updatePlaybackTime(songTime, currentBeat);
-
-        // FIX: Pass continuous (fractional) 16th notes instead of quantized 'current16thNote'
+        // Pass continuous (fractional) 16th notes instead of quantized 'current16thNote'
         // This ensures subscribers like MasterPlayhead animate smoothly at 60fps
         // instead of stepping every 125ms (8fps)
         this.onProgressCallbacks.forEach(cb => cb(songTime, currentBeat * 4));
 
-        this.rafId = requestAnimationFrame(() => this.visualLoop());
-    }
+        this.rafId = requestAnimationFrame(this.visualLoop);
+    };
 
     public subscribe(callback: (time: number, step: number) => void) {
         this.onProgressCallbacks.add(callback);
@@ -701,9 +698,8 @@ export class AudioScheduler {
         }
 
         const currentBeat = (timeInSeconds * tempo) / 60;
-        updatePlaybackTime(timeInSeconds, currentBeat); // Updates hook state (low freq)
 
-        // FIX: Force visual update for subscribers (MasterPlayhead) even if stopped
+        // Force visual update for subscribers (MasterPlayhead) even if stopped
         // This ensures the playhead snaps immediately when seek/stop occurs
         this.onProgressCallbacks.forEach(cb => cb(timeInSeconds, currentBeat * 4));
 
