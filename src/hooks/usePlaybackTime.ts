@@ -1,12 +1,24 @@
 'use client';
 
-import { useRef, useEffect, useCallback, useSyncExternalStore } from 'react';
+import { useRef, useEffect, useSyncExternalStore } from 'react';
 import { audioScheduler } from '../lib/scheduler';
 
 // This is the time value that updates 60fps - NOT in React state
 let currentPlaybackTime = 0;
 let currentPlaybackBeat = 0;
 const listeners = new Set<() => void>();
+
+// Subscribe to audioScheduler to update local state and notify listeners
+// This replaces the circular dependency where scheduler called updatePlaybackTime
+// We assume audioScheduler is a singleton that persists
+if (typeof window !== 'undefined') {
+    audioScheduler.subscribe((time, step) => {
+        currentPlaybackTime = time;
+        // step is 16th notes. Convert to beats (quarter notes)
+        currentPlaybackBeat = step / 4;
+        listeners.forEach(listener => listener());
+    });
+}
 
 // Subscribe function for useSyncExternalStore
 function subscribe(callback: () => void) {
@@ -21,14 +33,6 @@ export function getPlaybackTime() {
 
 export function getPlaybackBeat() {
     return currentPlaybackBeat;
-}
-
-// External update function called by scheduler
-export function updatePlaybackTime(time: number, beat: number) {
-    currentPlaybackTime = time;
-    currentPlaybackBeat = beat;
-    // Notify all subscribers (triggers re-render only for components using this hook)
-    listeners.forEach(listener => listener());
 }
 
 /**
@@ -83,4 +87,3 @@ export function usePlaybackCallback(callback: (time: number, beat: number) => vo
         return () => { unsubscribe(); };
     }, []);
 }
-
