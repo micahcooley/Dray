@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useEffect, useSyncExternalStore } from 'react';
+import { useRef, useEffect, useLayoutEffect, useSyncExternalStore } from 'react';
 import { audioScheduler } from '../lib/scheduler';
 
 // This is the time value that updates 60fps - NOT in React state
@@ -63,7 +63,7 @@ export function usePlaybackTimeRef() {
     const timeRef = useRef(0);
 
     useEffect(() => {
-        const unsubscribe = audioScheduler.subscribe((time, step) => {
+        const unsubscribe = audioScheduler.subscribe((time, _step) => {
             timeRef.current = time;
         });
         return () => { unsubscribe(); };
@@ -78,11 +78,18 @@ export function usePlaybackTimeRef() {
  */
 export function usePlaybackCallback(callback: (time: number, beat: number) => void) {
     const callbackRef = useRef(callback);
-    callbackRef.current = callback;
+
+    // Use useLayoutEffect to update the ref synchronously before paint
+    // This ensures the latest callback is always used without triggering re-renders
+    useLayoutEffect(() => {
+        callbackRef.current = callback;
+    }, [callback]);
 
     useEffect(() => {
         const unsubscribe = audioScheduler.subscribe((time, step) => {
-            callbackRef.current(time, step);
+            // step is a count of 16th notes. Divide by 4 to convert to beats (quarter notes)
+            // Example: step=8 (8 sixteenth notes) = 2 beats (2 quarter notes)
+            callbackRef.current(time, step / 4);
         });
         return () => { unsubscribe(); };
     }, []);
