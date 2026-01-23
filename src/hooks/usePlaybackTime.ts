@@ -63,7 +63,7 @@ export function usePlaybackTimeRef() {
     const timeRef = useRef(0);
 
     useEffect(() => {
-        const unsubscribe = audioScheduler.subscribe((time, step) => {
+        const unsubscribe = audioScheduler.subscribe((time) => {
             timeRef.current = time;
         });
         return () => { unsubscribe(); };
@@ -78,7 +78,10 @@ export function usePlaybackTimeRef() {
  */
 export function usePlaybackCallback(callback: (time: number, beat: number) => void) {
     const callbackRef = useRef(callback);
-    callbackRef.current = callback;
+
+    useEffect(() => {
+        callbackRef.current = callback;
+    });
 
     useEffect(() => {
         const unsubscribe = audioScheduler.subscribe((time, step) => {
