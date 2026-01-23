@@ -81,11 +81,12 @@ export function usePlaybackCallback(callback: (time: number, beat: number) => vo
 
     useEffect(() => {
         callbackRef.current = callback;
-    });
+    }, [callback]);
 
     useEffect(() => {
         const unsubscribe = audioScheduler.subscribe((time, step) => {
-            callbackRef.current(time, step);
+            // step is 16th notes, convert to beats (quarter notes)
+            callbackRef.current(time, step / 4);
         });
         return () => { unsubscribe(); };
     }, []);
