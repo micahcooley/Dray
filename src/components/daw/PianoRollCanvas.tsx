@@ -116,25 +116,31 @@ const PianoRollCanvas = forwardRef<PianoRollCanvasHandle, PianoRollCanvasProps>(
         const startIndex = Math.floor(startY / NOTE_HEIGHT);
         const endIndex = Math.min(visiblePitches.length - 1, Math.ceil(endY / NOTE_HEIGHT));
 
+        // Pass 1: Draw Black Keys Backgrounds
+        ctx.fillStyle = '#0a0a0e';
         for (let i = Math.max(0, startIndex); i <= endIndex; i++) {
             const pitch = visiblePitches[i];
-            const y = i * NOTE_HEIGHT;
             const noteIndex = pitch % 12;
-            const isBlack = [1, 3, 6, 8, 10].includes(noteIndex);
+            // Black key indices: C#(1), D#(3), F#(6), G#(8), A#(10)
+            const isBlack = (noteIndex === 1 || noteIndex === 3 || noteIndex === 6 || noteIndex === 8 || noteIndex === 10);
 
             if (isBlack) {
-                ctx.fillStyle = '#0a0a0e';
+                const y = i * NOTE_HEIGHT;
                 ctx.fillRect(startX, y, vWidth, NOTE_HEIGHT);
             }
+        }
 
-            // Horizontal line
-            ctx.strokeStyle = '#1e1e2d';
-            ctx.lineWidth = 1;
-            ctx.beginPath();
+        // Pass 2: Batch Draw Horizontal Lines
+        ctx.strokeStyle = '#1e1e2d';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        for (let i = Math.max(0, startIndex); i <= endIndex; i++) {
+            const y = i * NOTE_HEIGHT;
+            // Draw line at the bottom of the row
             ctx.moveTo(startX, y + NOTE_HEIGHT);
             ctx.lineTo(endX, y + NOTE_HEIGHT);
-            ctx.stroke();
         }
+        ctx.stroke();
 
         // 3. Draw Vertical Grid Lines
         const beatWidth = pixelsPerBeat;
