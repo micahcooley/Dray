@@ -87,7 +87,8 @@ export function usePlaybackCallback(callback: (time: number, beat: number) => vo
 
     useEffect(() => {
         const unsubscribe = audioScheduler.subscribe((time, step) => {
-            // step is 16th notes, convert to beats (quarter notes)
+            // step is a count of 16th notes. Divide by 4 to convert to beats (quarter notes)
+            // Example: step=8 (8 sixteenth notes) = 2 beats (2 quarter notes)
             callbackRef.current(time, step / 4);
         });
         return () => { unsubscribe(); };
