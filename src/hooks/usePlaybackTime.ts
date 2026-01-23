@@ -83,7 +83,7 @@ export function usePlaybackCallback(callback: (time: number, beat: number) => vo
     // This ensures the latest callback is always used without triggering re-renders
     useLayoutEffect(() => {
         callbackRef.current = callback;
-    });
+    }, [callback]);
 
     useEffect(() => {
         const unsubscribe = audioScheduler.subscribe((time, step) => {
