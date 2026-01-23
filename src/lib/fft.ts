@@ -51,6 +51,13 @@ export class FFT {
     }
 
     /**
+     * Get the FFT size
+     */
+    public getSize(): number {
+        return this.size;
+    }
+
+    /**
      * Performs forward FFT on real input data
      * Returns magnitude spectrum (first N/2 bins)
      * NOTE: Returns a reference to an internal buffer. Copy if you need to persist it.
@@ -66,8 +73,8 @@ export class FFT {
         for (let i = 0; i < n; i++) {
             const rev = this.reverseTable[i];
             // Handle input smaller than FFT size by zero-padding
-            real[i] = i < input.length ? input[rev] : 0;
-            imag[i] = 0;
+            real[rev] = i < input.length ? input[i] : 0;
+            imag[rev] = 0;
         }
 
         // Cooley-Tukey butterfly operations
