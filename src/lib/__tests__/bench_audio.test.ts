@@ -2,7 +2,7 @@
 import { audioToMidiConverter } from '../audioToMidiConverter';
 
 // Helper to generate noise buffer
-function createNoiseBuffer(length: number, sampleRate: number): Float32Array {
+function createNoiseBuffer(length: number): Float32Array {
     const buffer = new Float32Array(length);
     for (let i = 0; i < length; i++) {
         buffer[i] = Math.random() * 2 - 1;
@@ -29,7 +29,7 @@ describe('Audio Benchmark & Performance', () => {
     let sineBuffer: Float32Array;
 
     beforeAll(() => {
-        noiseBuffer = createNoiseBuffer(BUFFER_SIZE, SAMPLE_RATE);
+        noiseBuffer = createNoiseBuffer(BUFFER_SIZE);
         sineBuffer = createSineBuffer(440, BUFFER_SIZE, SAMPLE_RATE);
     });
 
@@ -37,7 +37,7 @@ describe('Audio Benchmark & Performance', () => {
         const start = performance.now();
 
         for (let i = 0; i < ITERATIONS; i++) {
-            // @ts-ignore - Accessing private method for benchmarking
+            // @ts-expect-error - Accessing private method for benchmarking
             audioToMidiConverter.detectPitchAutocorrelation(noiseBuffer, SAMPLE_RATE);
         }
 
@@ -47,7 +47,7 @@ describe('Audio Benchmark & Performance', () => {
         console.log(`[Benchmark] detectPitchAutocorrelation (avg over ${ITERATIONS} runs): ${avgTime.toFixed(4)} ms`);
 
         // Sanity check on sine wave
-        // @ts-ignore
+        // @ts-expect-error - Accessing private method for benchmarking
         const result = audioToMidiConverter.detectPitchAutocorrelation(sineBuffer, SAMPLE_RATE);
         expect(result).not.toBeNull();
         if (result) {
@@ -64,7 +64,7 @@ describe('Audio Benchmark & Performance', () => {
         const start = performance.now();
 
         for (let i = 0; i < ITERATIONS; i++) {
-            // @ts-ignore - Accessing private method for benchmarking
+            // @ts-expect-error - Accessing private method for benchmarking
             audioToMidiConverter.computeFFT(noiseBuffer);
         }
 
