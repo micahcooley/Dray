@@ -32,6 +32,8 @@ interface ConversionResult {
 type ConversionMode = 'melody' | 'harmony' | 'drums';
 
 class AudioToMidiConverter {
+    private static nextWorkerId = 0;
+
     async initialize() {
         await audioEngine.initialize();
     }
@@ -79,9 +81,12 @@ class AudioToMidiConverter {
     ): Promise<ConversionResult> {
         return new Promise((resolve, reject) => {
             const worker = new Worker(new URL('./worker/audioToMidi.worker.ts', import.meta.url));
-            const id = Math.floor(Math.random() * 1000000);
+            const id = AudioToMidiConverter.nextWorkerId++;
+            let settled = false;
 
             worker.onmessage = (event: MessageEvent<WorkerResponse>) => {
+                if (settled) return;
+
                 const { type, data, progress, error, id: responseId } = event.data;
                 if (responseId !== id) return;
 
@@ -91,15 +96,19 @@ class AudioToMidiConverter {
                         progress: progress.value
                     });
                 } else if (type === 'result' && data) {
+                    settled = true;
                     worker.terminate();
                     resolve(data);
                 } else if (type === 'error') {
+                    settled = true;
                     worker.terminate();
                     reject(new Error(error || 'Unknown worker error'));
                 }
             };
 
             worker.onerror = (e) => {
+                if (settled) return;
+                settled = true;
                 worker.terminate();
                 reject(e);
             };
@@ -112,11 +121,17 @@ class AudioToMidiConverter {
                 mode
             };
 
-            // Post message with buffer transfer if supported?
-            // channelData is a view on the buffer. We should likely slice it or ensure we don't need it here anymore.
-            // But Float32Array itself isn't transferable, its buffer is.
-            // However, copying is fine for typical audio clips (a few MBs).
-            worker.postMessage(request);
+            try {
+                // Post message with buffer transfer if supported?
+                // channelData is a view on the buffer. We should likely slice it or ensure we don't need it here anymore.
+                // But Float32Array itself isn't transferable, its buffer is.
+                // However, copying is fine for typical audio clips (a few MBs).
+                worker.postMessage(request);
+            } catch (e) {
+                settled = true;
+                worker.terminate();
+                reject(e);
+            }
         });
     }
 

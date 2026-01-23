@@ -285,7 +285,7 @@ function detectPitchAutocorrelation(
 function detectMultiplePitches(buffer: Float32Array, sampleRate: number, fft: FFT): number[] {
     // Use Optimized FFT
     const spectrum = fft.forward(buffer);
-    const peaks = findSpectralPeaks(spectrum, sampleRate, buffer.length);
+    const peaks = findSpectralPeaks(spectrum, sampleRate, fft.getSize());
 
     return peaks
         .filter(f => f > 60 && f < 2000)
@@ -313,7 +313,7 @@ function findSpectralPeaks(spectrum: Float32Array, sampleRate: number, bufferSiz
 
 function calculateSpectralCentroid(buffer: Float32Array, sampleRate: number, fft: FFT): number {
     const spectrum = fft.forward(buffer);
-    const binWidth = sampleRate / buffer.length;
+    const binWidth = sampleRate / fft.getSize();
 
     let weightedSum = 0;
     let sum = 0;
