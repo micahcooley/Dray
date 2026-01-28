@@ -1,7 +1,7 @@
 'use client';
 
-import React from 'react';
-import { usePlaybackTime } from '../../hooks/usePlaybackTime';
+import React, { useRef, useEffect } from 'react';
+import { usePlaybackCallback, getPlaybackTime } from '../../hooks/usePlaybackTime';
 
 const formatTime = (seconds: number) => {
     const mins = Math.floor(seconds / 60);
@@ -10,7 +10,21 @@ const formatTime = (seconds: number) => {
     return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}:${ms.toString().padStart(3, '0')}`;
 };
 
-export default function TimeDisplay() {
-    const currentTime = usePlaybackTime();
-    return <span className="time">{formatTime(currentTime)}</span>;
+export default function TimeDisplay({ className = 'time' }: { className?: string }) {
+    const spanRef = useRef<HTMLSpanElement>(null);
+
+    // Set initial value on mount
+    useEffect(() => {
+        if (spanRef.current) {
+            spanRef.current.textContent = formatTime(getPlaybackTime());
+        }
+    }, []);
+
+    usePlaybackCallback((time) => {
+        if (spanRef.current) {
+            spanRef.current.textContent = formatTime(time);
+        }
+    });
+
+    return <span ref={spanRef} className={className}>00:00:000</span>;
 }

@@ -1,9 +1,9 @@
 'use client';
 
-import React from 'react';
+import React, { useRef, useEffect } from 'react';
 import { Play, Square, Circle, Sparkles, Settings, Share2 } from 'lucide-react';
 import { useProjectStore } from '../../store/useProjectStore';
-import { usePlaybackTime } from '../../hooks/usePlaybackTime';
+import { usePlaybackCallback, getPlaybackTime } from '../../hooks/usePlaybackTime';
 import { audioEngine } from '../../lib/audioEngine';
 
 // Format seconds to MM:SS:mmm
@@ -16,7 +16,19 @@ function formatTime(seconds: number): string {
 
 export default function Toolbar() {
   const { isPlaying, togglePlay, activeProject } = useProjectStore();
-  const playbackTime = usePlaybackTime();
+  const timeRef = useRef<HTMLSpanElement>(null);
+
+  useEffect(() => {
+    if (timeRef.current) {
+      timeRef.current.textContent = formatTime(getPlaybackTime());
+    }
+  }, []);
+
+  usePlaybackCallback((time) => {
+    if (timeRef.current) {
+      timeRef.current.textContent = formatTime(time);
+    }
+  });
 
   const handleTogglePlay = async () => {
     if (!isPlaying) {
@@ -45,7 +57,7 @@ export default function Toolbar() {
           <Circle size={18} fill="currentColor" />
         </button>
         <div className="time-display">
-          <span className="time-value">{formatTime(playbackTime)}</span>
+          <span ref={timeRef} className="time-value">00:00:000</span>
           <span className="tempo-value">{activeProject?.tempo || 120} BPM</span>
         </div>
       </div>
