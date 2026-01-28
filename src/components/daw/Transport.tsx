@@ -1,13 +1,13 @@
 'use client';
 
-import React from 'react';
+import React, { useRef, useEffect } from 'react';
 import {
     Play, Square, Circle, SkipBack, SkipForward, Settings, Share2, Sparkles
 } from 'lucide-react';
 import { useProjectStore } from '../../store/useProjectStore';
 import { audioEngine } from '../../lib/audioEngine';
 import { audioScheduler } from '../../lib/scheduler';
-import { usePlaybackTime } from '../../hooks/usePlaybackTime';
+import { usePlaybackCallback, getPlaybackTime } from '../../hooks/usePlaybackTime';
 import type { Project } from '../../lib/types';
 import styles from './transport.module.css';
 
@@ -25,7 +25,19 @@ function formatTime(seconds: number): string {
 
 export default function Transport({ project }: TransportProps) {
     const { isPlaying, togglePlay: storeTogglePlay } = useProjectStore();
-    const currentTime = usePlaybackTime();
+    const timeRef = useRef<HTMLSpanElement>(null);
+
+    useEffect(() => {
+        if (timeRef.current) {
+            timeRef.current.textContent = formatTime(getPlaybackTime());
+        }
+    }, []);
+
+    usePlaybackCallback((time) => {
+        if (timeRef.current) {
+            timeRef.current.textContent = formatTime(time);
+        }
+    });
 
     const handleTogglePlay = async () => {
         try {
@@ -89,7 +101,7 @@ export default function Transport({ project }: TransportProps) {
                     <Circle size={16} />
                 </button>
                 <div className={styles.timeDisplay}>
-                    <span className={styles.time}>{formatTime(currentTime)}</span>
+                    <span ref={timeRef} className={styles.time}>00:00:000</span>
                 </div>
 
                 <div className={styles.tempoDisplay}>
